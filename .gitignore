@@ -1,0 +1,6 @@
+src/MVPluginPatcher/.vs
+src/MVPluginPatcher/Debug
+src/MVPluginPatcher/Release
+src/MVPluginPatcher/MVPluginPatcher/Debug
+src/MVPluginPatcher/MVPluginPatcher/Release
+*.sdf

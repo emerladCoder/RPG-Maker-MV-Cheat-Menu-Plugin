@@ -1,0 +1,59 @@
+#cheat_menu{
+	position: absolute;
+	width: 280px;
+	height: 100px;
+	z-index: 1000;
+	background-color: #000000;
+	color: #ffffff;
+	opacity: 0.75;
+	text-align: center;
+	padding: 10px;
+}
+
+#cheat_menu_text{
+	position: absolute;
+	width: 300px;
+	z-index: 1001;
+	background-color: transparent;
+	color: #ffffff;
+	opacity: 1;
+	text-align: center;
+	padding: 10px;
+
+	border-spacing: 0; 
+}
+
+.scroll_selector_row {
+	width: 100%;
+	text-align: center;
+}
+
+.scroll_selector_buttons:hover {
+	color: #ff0000;
+	text-shadow: 0 0 5px #ff0000;
+}
+
+.cheat_menu_buttons:hover {
+	color: #ff0000;
+	text-shadow: 0 0 5px #ff0000;
+}
+
+.cheat_menu_cell {
+	border-bottom: 1px solid #6f6f6f;
+	max-width: 100px;
+	width: 100px;
+
+	font-weight: normal;
+	font-size: 15px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+.cheat_menu_cell_title {
+	max-width: 100px;
+	width: 100px;
+	font-weight: bold;
+	font-size: 20px;
+	padding-top: 8px;
+	padding-bottom: 5px;
+}
