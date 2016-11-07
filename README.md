@@ -61,6 +61,8 @@ If there's a better place to post this please feel free to move this thread (if 
 
 Other Cool Stuff
 ----------------
+ULMF thread for this plugin: [thread](http://www.ulmf.org/bbs/showthread.php?t=28982)
+
 I might also suggest Libellule's text hook for untranslated games: [thread](http://www.ulmf.org/bbs/showthread.php?t=29359)  
 It has a packaged version of my Cheat Menu, just note it is outdated at the moment so if you install my plugin with his patcher just overwrite with the /www folder downloaded from the most recent version here.
 
