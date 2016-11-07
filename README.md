@@ -31,7 +31,7 @@ Install
 
 * Unpack Game if needed.
  * Use one of these tools: [link](http://www.ulmf.org/bbs/showpost.php?p=830445&postcount=91)
-* Copy and Paste this contents of this folder into folder with Game.exe
+* Copy and Paste this contents of Cheat_Menu folder into folder with Game.exe
 * Patch your www/js/plugins.js
  * Backup your www/js/plugins.js file
  * Patch
@@ -66,7 +66,8 @@ It has a packaged version of my Cheat Menu, just note it is outdated at the mome
 
 Froggus has a save editor that works with a bunch of versions of RPG maker games including MV: [thread](http://www.ulmf.org/bbs/showthread.php?t=28936)
 
-Edits:  
+Initial Edits (unversioned)
+---------------------------
 v2 Original version on this thread  
 v3 Updated for mouse controls and editing gold  
 v4 Update edit inventory, open console  
