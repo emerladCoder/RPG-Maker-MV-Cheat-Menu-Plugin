@@ -917,10 +917,19 @@ var KEYCODE_0 = 48;
 var KEYCODE_TILDE = 192;
 
 window.addEventListener("keydown", function(event) {
-	if (!event.ctrlKey && !event.altKey && (event.keyCode === 119)) {
+	if (!event.ctrlKey && !event.altKey && (event.keyCode === 119) && $gameTemp && !$gameTemp.isPlaytest()) {
+		// open debug menu
 		event.stopPropagation();
 		event.preventDefault();
 		require('nw.gui').Window.get().showDevTools();
+	}
+	else if (!event.altKey && !event.ctrlKey && !event.shiftKey && (event.keyCode === 120) && $gameTemp && !$gameTemp.isPlaytest()) {
+		// trick the game into thinking its a playtest so it will open the switch/variable debug menu
+		$gameTemp._isPlaytest = true;
+		setTimeout(function() {
+			// back to not being playtest
+			$gameTemp._isPlaytest = false;
+		}, 100);
 	}
 	else if (Cheat_Menu.overlay_openable && !event.altKey && !event.ctrlKey && !event.shiftKey) {
 		// open and close menu
