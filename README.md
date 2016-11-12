@@ -55,7 +55,7 @@ Downloads
 ---------
 Download: [mega link](https://mega.nz/#!VpYiWKSD!QaPex0_-ABMjVwN4mhEJc7y8Onijayw0IbsY5TKjo74)
 
-Folder of all versions: [mega link](https://mega.nz/#F!gk4l3BLQ!lWPFyecd2bLHnn_l8frzlg)
+Folder of all versions: [mega link](https://mega.nz/#F!NxQxHJKY!N6-YTgC4B2y5AZVpNgAvdA)
 
 I've tested this to work with Cursed Armor and 魔王イリスの逆襲[RJ176175]
 
