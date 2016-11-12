@@ -25,7 +25,7 @@ Available Cheats Are
 * Clear Status/States Effects
 * Open javascript console/developer tools with F8
  * With this you can edit game Variables and Switches (at your own risk) in the $gameVariables and $gameSwitches, as well as other advanced stuff
-* Open Switch/Variable Debug Menu from playtest Mode
+* Open Switch/Variable Debug Menu from playtest Mode with F9
  * Better method for editing the Switches and Variables than using the console
  
 Install
