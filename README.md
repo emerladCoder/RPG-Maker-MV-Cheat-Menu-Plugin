@@ -1,21 +1,21 @@
 RPG Maker MV Cheat Menu Plugin
 ==============================
 
-I've created a plugin for RPG Maker MV that allows users to access a Cheat Menu in game. The controls are all input via the number keys \[0\]\-\[9\] (not the NUMPAD).
+I've created a plugin for RPG Maker MV that allows users to access a Cheat Menu in game. The controls are all input via the number keys \[0\]\-\[9\] (not the NUMPAD) or the mouse.
 
 Open the Menu by pressing the \[1\] Key.  
 Move menu to different positions with \` (key with tilde ~)  
 Scroll between cheats with \[2\] and \[3\] Keys.  
 Any \[#\] indicates a number key to press to cause an action, if you don't want to click.  
 
-The menu can also be interacted with by clicking (everything except opening can be done with the mouse).  
-Edit: Controls are much move intuitive now, everything is left click and clickable elements will be highlighted on hover over.
+The menu can also be interacted with by clicking (everything except opening the menu can be done with the mouse).  
+Clicking is done with left click and clickable elements will be highlighted on hover over.
 
 Available Cheats Are
 --------------------
 
 * God Mode for any Actor (infinite hp and mp, skills shouldn't cost anything)
-* Set Enemy HP to 0 hp or 1 hp
+* Set Enemy/Party HP to 0 hp or 1 hp, Party Full Recover (HP, MP, Status)
 * Toggle No Clip
 * Edit Exp
 * Edit Stats
@@ -53,13 +53,11 @@ Uninstall
 
 Downloads
 ---------
-Download: [mega link](https://mega.nz/#!ZwhXhCTa!7BAIFOPx6XXJUc3C3xiFnEtKvM5nNofAS3NNwU_hanU)
+Download: [mega link](https://mega.nz/#!VpYiWKSD!QaPex0_-ABMjVwN4mhEJc7y8Onijayw0IbsY5TKjo74)
 
-Folder of all versions: [mega link](https://mega.nz/#F!NxQxHJKY!N6-YTgC4B2y5AZVpNgAvdA)
+Folder of all versions: [mega link](https://mega.nz/#F!gk4l3BLQ!lWPFyecd2bLHnn_l8frzlg)
 
 I've tested this to work with Cursed Armor and 魔王イリスの逆襲[RJ176175]
-
-If there's a better place to post this please feel free to move this thread (if possible).
 
 Other Cool Stuff
 ----------------
@@ -70,7 +68,7 @@ It has a packaged version of my Cheat Menu, just note it is outdated at the mome
 
 Froggus has a save editor that works with a bunch of versions of RPG maker games including MV: [thread](http://www.ulmf.org/bbs/showthread.php?t=28936)
 
-Initial Edits (unversioned)
+Changelog (including unversioned)
 ---------------------------
 v2 Original version on this thread  
 v3 Updated for mouse controls and editing gold  
@@ -84,4 +82,5 @@ v10 Tweaked interface
 v11 Stupidity Checks and More Interface Tweaking  
 v12 Added 1 second timer for more active updates (in game changes will show up on the menu without having to manually refresh)  
 v13 Updated initialization to fire for new games as well as load games, menu hotkeys only function with no control keys (alt, shift, ctrl) held down  
-v14 Added remove states/status for actors, added some more calls to sfx, fixed set enemy hp to 1 to actually set to 1 and not 0  
+v14 Added remove states/status for actors, added some more calls to sfx, fixed set enemy hp to 1 to actually set to 1 and not 0
+v15 Added Party HP manipulation to the set all party HP to 0 or 1 as well as a party full recover (added to previous enemy hp tab)  
