@@ -83,4 +83,5 @@ v11 Stupidity Checks and More Interface Tweaking
 v12 Added 1 second timer for more active updates (in game changes will show up on the menu without having to manually refresh)  
 v13 Updated initialization to fire for new games as well as load games, menu hotkeys only function with no control keys (alt, shift, ctrl) held down  
 v14 Added remove states/status for actors, added some more calls to sfx, fixed set enemy hp to 1 to actually set to 1 and not 0
-v15 Added Party HP manipulation to the set all party HP to 0 or 1 as well as a party full recover (added to previous enemy hp tab)  
+v15 Added pressing F9 to open the playtest switch/variable debug menu
+v16 Added Party HP manipulation to the set all party HP to 0 or 1 as well as a party full recover (added to previous enemy hp tab)  
