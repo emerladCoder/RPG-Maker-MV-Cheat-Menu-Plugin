@@ -43,7 +43,7 @@ Cheat_Menu.god_mode = function(actor) {
 		actor.setHp = function(hp) {
 			hp = this.mhp;
 			this.setHp_bkup(hp);
-		}
+		};
 
 		actor.gainMp_bkup = actor.gainMp;
 		actor.gainMp = function (value) {
@@ -55,12 +55,18 @@ Cheat_Menu.god_mode = function(actor) {
 		actor.setMp = function(mp) {
 			mp = this.mmp;
 			this.setMp_bkup(mp);
-		}
+		};
 
 		actor.gainTp_bkup = actor.gainTp;
 		actor.gainTp = function (value) {
 			value = this.maxTp();
 			this.gainTp_bkup(value);
+		};
+
+		actor.setTp_bkup = actor.setTp;
+		actor.setTp = function(tp) {
+			tp = this.maxTp();
+			this.setTp_bkup(tp);
 		};
 
 		actor.paySkillCost_bkup = actor.paySkillCost;
@@ -85,7 +91,9 @@ Cheat_Menu.god_mode_off = function(actor) {
 		actor.gainHp = actor.gainHP_bkup;
 		actor.setHp = actor.setHp_bkup;
 		actor.gainMp = actor.gainMp_bkup;
+		actor.setMp = actor.setMp_bkup;
 		actor.gainTp = actor.gainTp_bkup;
+		actor.setTp = actor.setTp_bkup;
 		actor.paySkillCost = actor.paySkillCost_bkup;
 
 		clearInterval(actor.god_mode_interval);
@@ -953,6 +961,9 @@ window.addEventListener("keydown", function(event) {
 				for (var i = 0; i < $gameActors._data.length; i++) {
 					if($gameActors._data[i]) {
 						$gameActors._data[i].god_mode = false;
+						if ($gameActors._data[i].god_mode_interval) {
+							clearInterval($gameActors._data[i].god_mode_interval);
+						}
 					}
 				}
 

@@ -53,7 +53,7 @@ Uninstall
 
 Downloads
 ---------
-Download: [mega link](https://mega.nz/#!d9QlXDAJ!5kJs4bezqU4SkDrajHTsbq_cOBGKM3CZpmtLjqjo_h8)
+Download: [mega link](https://mega.nz/#!FkYQwD5B!9S1OUB6ruJn4Jh30J5_y0mN8zNc_9n-mSwKjUl7H2dU)
 
 Folder of all versions: [mega link](https://mega.nz/#F!NxQxHJKY!N6-YTgC4B2y5AZVpNgAvdA)
 
@@ -86,3 +86,4 @@ v14 Added remove states/status for actors, added some more calls to sfx, fixed s
 v15 Added pressing F9 to open the playtest switch/variable debug menu  
 v16 Added Party HP manipulation to the set all party HP to 0 or 1 as well as a party full recover (added to previous enemy hp tab)  
 v17 Change to backend for keylistener to make it easier to add/change stuff, most cheats use built in RPG maker function calls now instead of just directly changing the variables (ex. actor._hp calls replaced with actor.gainHp())  
+v18 Fixes to godmode, should be more robust, also fixed crash from v17  
