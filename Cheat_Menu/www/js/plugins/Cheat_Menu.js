@@ -15,8 +15,6 @@ Cheat_Menu.cheat_selected = 0;
 Cheat_Menu.cheat_selected_actor = 1;
 Cheat_Menu.amounts = [-100000, -10000, -1000, -100, -10, -1, 1, 10, 100, 1000, 10000, 100000];
 Cheat_Menu.amount_index = 6;
-Cheat_Menu.current_classes = [];
-Cheat_Menu.class_selection = 0;
 Cheat_Menu.stat_selection = 0;
 Cheat_Menu.item_selection = 1;
 Cheat_Menu.weapon_selection = 1;
@@ -37,31 +35,31 @@ Cheat_Menu.god_mode = function(actor) {
 
 		actor.gainHP_bkup = actor.gainHp;
 		actor.gainHp = function(value) {
-			if (value < 0) {
-				value = 0;
-			}
+			value = this.mhp;
 			this.gainHP_bkup(value);
 		};
 
 		actor.setHp_bkup = actor.setHp;
 		actor.setHp = function(hp) {
-			hp = Math.max(1, hp);
+			hp = this.mhp;
 			this.setHp_bkup(hp);
 		}
 
 		actor.gainMp_bkup = actor.gainMp;
 		actor.gainMp = function (value) {
-			if (value < 0) {
-				value = 0;
-			}
+			value = this.mmp;
 			this.gainMp_bkup(value);
 		};
 
+		actor.setMp_bkup = actor.setMp;
+		actor.setMp = function(mp) {
+			mp = this.mmp;
+			this.setMp_bkup(mp);
+		}
+
 		actor.gainTp_bkup = actor.gainTp;
 		actor.gainTp = function (value) {
-			if (value < 0) {
-				value = 0;
-			}
+			value = this.maxTp();
 			this.gainTp_bkup(value);
 		};
 
@@ -71,8 +69,9 @@ Cheat_Menu.god_mode = function(actor) {
 		};
 
 		actor.god_mode_interval = setInterval(function() {
-			actor._hp = actor.mhp;
-			actor._mp = actor.mmp;
+			actor.gainHp(actor.mhp);
+			actor.gainMp(actor.mmp);
+			actor.gainTp(actor.maxTp());
 		}, 100);
 	}
 };
@@ -95,47 +94,50 @@ Cheat_Menu.god_mode_off = function(actor) {
 
 // set all party hp
 Cheat_Menu.set_party_hp = function(hp) {
-	for (var i = 0; i < $gameParty._actors.length; i++) {
-		$gameActors._data[$gameParty._actors[i]]._hp = hp;
+	var members = $gameParty.allMembers();
+	for (var i = 0; i < members.length; i++) {
+		members[i].setHp(hp);
 	}
 };
 
 // set all party mp
 Cheat_Menu.set_party_mp = function(mp) {
-	for (var i = 0; i < $gameParty._actors.length; i++) {
-		$gameActors._data[$gameParty._actors[i]]._mp = mp;
+	var members = $gameParty.allMembers();
+	for (var i = 0; i < members.length; i++) {
+		members[i].setMp(mp);;
 	}
 };
 
 // party full recover hp
 Cheat_Menu.recover_party_hp = function() {
-	for (var i = 0; i < $gameParty._actors.length; i++) {
-		$gameActors._data[$gameParty._actors[i]]._hp = $gameActors._data[$gameParty._actors[i]].mhp;
+	var members = $gameParty.allMembers();
+	for (var i = 0; i < members.length; i++) {
+		members[i].setHp(members[i].mhp);
 	}
 };
 
 // party full recover mp
 Cheat_Menu.recover_party_mp = function() {
-	for (var i = 0; i < $gameParty._actors.length; i++) {
-		$gameActors._data[$gameParty._actors[i]]._mp = $gameActors._data[$gameParty._actors[i]].mmp;
+	var members = $gameParty.allMembers();
+	for (var i = 0; i < members.length; i++) {
+		members[i].setMp(members[i].mmp);
 	}
 };
 
 // set all enemies hp
 Cheat_Menu.set_enemy_hp = function(hp) {
-	for (var i = 0; i < $gameTroop._enemies.length; i++) {
-		if ($gameTroop._enemies[i]) {
-			$gameTroop._enemies[i]._hp = hp;
+	var members = $gameTroop.members();
+	for (var i = 0; i < members.length; i++) {
+		if (members[i]) {
+			members[i].setHp(hp);;
 		}
 	}
 };
 
-// increase class exp
-Cheat_Menu.give_exp = function(actor, class_index, amount) {
+// increase exp
+Cheat_Menu.give_exp = function(actor, amount) {
 	if (actor instanceof Game_Actor) {
-		if (actor._exp[class_index] != undefined) {
-			actor._exp[class_index] += amount;
-		}
+		actor.gainExp(amount);
 	}
 };
 
@@ -143,49 +145,34 @@ Cheat_Menu.give_exp = function(actor, class_index, amount) {
 Cheat_Menu.give_stat = function(actor, stat_index, amount) {
 	if (actor instanceof Game_Actor) {
 		if (actor._paramPlus[stat_index] != undefined) {
-			actor._paramPlus[stat_index] += amount;
+			actor.addParam(stat_index, amount);
 		}
 	}
 };
 
 // increase gold
 Cheat_Menu.give_gold = function(amount) {
-	$gameParty._gold += amount;
+	$gameParty.gainGold(amount);
 };
 
 // increase item count for party of item, by id
 Cheat_Menu.give_item = function(item_id, amount) {
 	if ($dataItems[item_id] != undefined) {
-		if ($gameParty._items[item_id] == undefined) {
-			$gameParty._items[item_id] = amount;
-		}
-		else {
-			$gameParty._items[item_id] += amount;
-		}
+		$gameParty.gainItem($dataItems[item_id], amount);
 	}
 }
 
 // increase weapon count for party of item, by id
 Cheat_Menu.give_weapon = function(weapon_id, amount) {
 	if ($dataWeapons[weapon_id] != undefined) {
-		if ($gameParty._weapons[weapon_id] == undefined) {
-			$gameParty._weapons[weapon_id] = amount;
-		}
-		else {
-			$gameParty._weapons[weapon_id] += amount;
-		}
+		$gameParty.gainItem($dataWeapons[weapon_id], amount);
 	}
 }
 
 // increase armor count for party of item, by id
 Cheat_Menu.give_armor = function(armor_id, amount) {
 	if ($dataArmors[armor_id] != undefined) {
-		if ($gameParty._armors[armor_id] == undefined) {
-		$gameParty._armors[armor_id] = amount;
-		}
-		else {
-			$gameParty._armors[armor_id] += amount;
-		}
+		$gameParty.gainItem($dataArmors[armor_id], amount);
 	}
 }
 
@@ -198,16 +185,16 @@ Cheat_Menu.change_player_speed = function(amount) {
 Cheat_Menu.clear_actor_states = function(actor) {
 	if (actor instanceof Game_Actor) {
 		if (actor._states != undefined && actor._states.length > 0) {
-			actor._states = [];
-			actor._stateTurns = {};
+			actor.clearStates();
 		}
 	}
 }
 
 // clear active states on party
 Cheat_Menu.clear_party_states = function() {
-	for (var i = 0; i < $gameParty._actors.length; i++) {
-		Cheat_Menu.clear_actor_states($gameActors._data[$gameParty._actors[i]]);
+	var members = $gameParty.allMembers();
+	for (var i = 0; i < members.length; i++) {
+		Cheat_Menu.clear_actor_states(members[i]);
 	}
 }
 
@@ -359,6 +346,9 @@ Cheat_Menu.append_scroll_selector = function(text, key1, key2, scroll_left_handl
 
 	scroll_left_button.addEventListener('mousedown', scroll_left_handler);
 	scroll_right_button.addEventListener('mousedown', scroll_right_handler);
+
+	Cheat_Menu.key_listeners[key1] = scroll_left_handler;
+	Cheat_Menu.key_listeners[key2] = scroll_right_handler;
 }
 
 // insert a title row
@@ -388,6 +378,7 @@ Cheat_Menu.append_cheat = function(cheat_text, status_text, key, click_handler) 
 	cheat.innerHTML = status_text + "[" + key + "]";
 
 	cheat.addEventListener('mousedown', click_handler);
+	Cheat_Menu.key_listeners[key] = click_handler;
 }
 
 //
@@ -600,29 +591,8 @@ Cheat_Menu.append_move_amount_selection = function(key1, key2) {
 	Cheat_Menu.append_scroll_selector(current_amount, key1, key2, Cheat_Menu.move_left_move_amount, Cheat_Menu.move_right_move_amount);
 }
 
-Cheat_Menu.scroll_left_class = function(event) {
-	Cheat_Menu.class_selection--;
-	if (Cheat_Menu.class_selection < 0) {
-		if (Cheat_Menu.current_classes.length > 0) {
-			Cheat_Menu.class_selection = Cheat_Menu.current_classes.length - 1;
-		}
-		else {
-			Cheat_Menu.class_selection = 0;
-		}
-	}
-	Cheat_Menu.update_menu();
-}
-
-Cheat_Menu.scroll_right_class = function(event) {
-	Cheat_Menu.class_selection++;
-	if (Cheat_Menu.class_selection >= Cheat_Menu.current_classes.length) {
-		Cheat_Menu.class_selection = 0;
-	}
-	Cheat_Menu.update_menu();
-}
-
 Cheat_Menu.give_current_exp = function(event) {
-	Cheat_Menu.give_exp($gameActors._data[Cheat_Menu.cheat_selected_actor], Cheat_Menu.current_classes[Cheat_Menu.class_selection] , Cheat_Menu.amounts[Cheat_Menu.amount_index]);
+	Cheat_Menu.give_exp($gameActors._data[Cheat_Menu.cheat_selected_actor], Cheat_Menu.amounts[Cheat_Menu.amount_index]);
 	Cheat_Menu.update_menu();
 
 	if (Cheat_Menu.amounts[Cheat_Menu.amount_index] > 0) {
@@ -633,31 +603,12 @@ Cheat_Menu.give_current_exp = function(event) {
 	}
 }
 
-Cheat_Menu.append_class_selection = function(key1, key2, key3) {
-	Cheat_Menu.append_title("Class");
-
-	var class_string = "";
-
-	if ($gameActors._data[Cheat_Menu.cheat_selected_actor] && $gameActors._data[Cheat_Menu.cheat_selected_actor]._exp) {
-		Cheat_Menu.current_classes = Object.keys($gameActors._data[Cheat_Menu.cheat_selected_actor]._exp);
-		if (Cheat_Menu.current_classes.length > 0) {
-			if (Cheat_Menu.class_selection >= Cheat_Menu.current_classes.length) {
-				Cheat_Menu.class_selection = 0;
-			}
-			class_string = $dataClasses[Cheat_Menu.current_classes[Cheat_Menu.class_selection]].name;
-		}
-	}
-	else {
-		Cheat_Menu.current_classes = [];
-	}
-
-
-	Cheat_Menu.append_scroll_selector(class_string, key1, key2, Cheat_Menu.scroll_left_class, Cheat_Menu.scroll_right_class);
+Cheat_Menu.append_exp_cheat = function(key1) {
 	var current_exp = "NULL";
-	if (Cheat_Menu.current_classes.length > 0) {
-		current_exp = $gameActors._data[Cheat_Menu.cheat_selected_actor]._exp[Cheat_Menu.current_classes[Cheat_Menu.class_selection]];
+	if ($gameActors._data[Cheat_Menu.cheat_selected_actor]) {
+		current_exp = $gameActors._data[Cheat_Menu.cheat_selected_actor].currentExp();
 	}
-	Cheat_Menu.append_cheat("EXP:", current_exp, key3, Cheat_Menu.give_current_exp);
+	Cheat_Menu.append_cheat("EXP:", current_exp, key1, Cheat_Menu.give_current_exp);
 }
 
 Cheat_Menu.scroll_left_stat = function(event) {
@@ -883,7 +834,8 @@ Cheat_Menu.append_current_state = function(key1) {
 Cheat_Menu.update_menu = function() {
 	// clear menu
 	Cheat_Menu.overlay.innerHTML = "";
-	
+	// clear key listeners
+	Cheat_Menu.key_listeners = [];
 
 	// god mode
 	if (Cheat_Menu.cheat_selected == 0) {
@@ -907,7 +859,7 @@ Cheat_Menu.update_menu = function() {
 		Cheat_Menu.append_cheat_title("Give Exp");
 		Cheat_Menu.append_actor_selection(4, 5);
 		Cheat_Menu.append_amount_selection(6, 7);
-		Cheat_Menu.append_class_selection(8, 9, 0);
+		Cheat_Menu.append_exp_cheat(8);
 	}
 	else if (Cheat_Menu.cheat_selected == 4) {
 		Cheat_Menu.append_cheat_title("Stats");
@@ -977,6 +929,8 @@ var KEYCODE_9 = 57;
 var KEYCODE_0 = 48;
 var KEYCODE_TILDE = 192;
 
+Cheat_Menu.key_listeners = [];
+
 window.addEventListener("keydown", function(event) {
 	if (!event.ctrlKey && !event.altKey && (event.keyCode === 119) && $gameTemp && !$gameTemp.isPlaytest()) {
 		// open debug menu
@@ -1006,8 +960,6 @@ window.addEventListener("keydown", function(event) {
 				Cheat_Menu.cheat_selected = 0;
 				Cheat_Menu.cheat_selected_actor = 1;
 				Cheat_Menu.amount_index = 6;
-				Cheat_Menu.current_classes = [];
-				Cheat_Menu.class_selection = 0;
 				Cheat_Menu.stat_selection = 0;
 				Cheat_Menu.item_selection = 1;
 				Cheat_Menu.weapon_selection = 1;
@@ -1037,17 +989,8 @@ window.addEventListener("keydown", function(event) {
 
 		// navigate and activate cheats
 		else if (Cheat_Menu.cheat_menu_open) {
-			// cycle left cheat
-			if (event.keyCode == KEYCODE_2) {
-				Cheat_Menu.scroll_left_cheat();
-			}
-			// cycle right cheat
-			else if (event.keyCode == KEYCODE_3 ) {
-				Cheat_Menu.scroll_right_cheat();
-			}
-
 			// move menu position
-			else if (event.keyCode == KEYCODE_TILDE) {
+			if (event.keyCode == KEYCODE_TILDE) {
 				Cheat_Menu.position++;
 				if (Cheat_Menu.position > 4) {
 					Cheat_Menu.position = 0;
@@ -1055,254 +998,52 @@ window.addEventListener("keydown", function(event) {
 				Cheat_Menu.update_menu();
 			}
 
-
-			// god mode controls
-			if (Cheat_Menu.cheat_selected == 0) {
-				// cycle left actor selection
-				if (event.keyCode == KEYCODE_4) {
-					Cheat_Menu.scroll_left_actor();
-				}
-				// cycle right actor selection
-				else if (event.keyCode == KEYCODE_5 ) {
-					Cheat_Menu.scroll_right_actor();
-				}
-				// toggle god mode
-				else if (event.keyCode == KEYCODE_6 && $gameActors._data[Cheat_Menu.cheat_selected_actor]) {
-					Cheat_Menu.god_mode_toggle();
+			// listeners for each possible key if assigned
+			else if (event.keyCode == KEYCODE_2) {
+				if (Cheat_Menu.key_listeners[2]) {
+					Cheat_Menu.key_listeners[2]();
 				}
 			}
-			
-			// enemy health
-			else if (Cheat_Menu.cheat_selected == 1) {
-				if (event.keyCode == KEYCODE_4) {
-					Cheat_Menu.enemy_hp_cheat_1();
-				}
-				else if (event.keyCode == KEYCODE_5) {
-					Cheat_Menu.enemy_hp_cheat_2();
-				}
-				else if (event.keyCode == KEYCODE_6) {
-					Cheat_Menu.party_hp_cheat_1();
-				}
-				else if (event.keyCode == KEYCODE_7) {
-					Cheat_Menu.party_hp_cheat_2();
-				}
-				else if (event.keyCode == KEYCODE_8) {
-					Cheat_Menu.party_recovery_cheat();
+			else if (event.keyCode == KEYCODE_3 ) {
+				if (Cheat_Menu.key_listeners[3]) {
+					Cheat_Menu.key_listeners[3]();
 				}
 			}
-
-			// no clip
-			else if (Cheat_Menu.cheat_selected == 2) {
-				if (event.keyCode == KEYCODE_4) {
-					Cheat_Menu.toggle_no_clip_status();
+			else if (event.keyCode == KEYCODE_4 ) {
+				if (Cheat_Menu.key_listeners[4]) {
+					Cheat_Menu.key_listeners[4]();
 				}
 			}
-
-			// give exp
-			else if (Cheat_Menu.cheat_selected == 3) {
-				// cycle left actor selection
-				if (event.keyCode == KEYCODE_4) {
-					Cheat_Menu.scroll_left_actor();
-				}
-				// cycle right actor selection
-				else if (event.keyCode == KEYCODE_5 ) {
-					Cheat_Menu.scroll_right_actor();
-				}
-
-
-				// cycle left amount
-				else if (event.keyCode == KEYCODE_6) {
-					Cheat_Menu.move_left_amount();
-				}
-				// cycle right amount
-				else if (event.keyCode == KEYCODE_7) {
-					Cheat_Menu.move_right_amount();
-				}
-
-				else if (Cheat_Menu.current_classes.length > 0) {
-					// cycle left class
-					if (event.keyCode == KEYCODE_8) {
-						Cheat_Menu.scroll_left_class();
-					}
-					// cycle right class
-					else if (event.keyCode == KEYCODE_9) {
-						Cheat_Menu.scroll_right_class();
-					}
-
-					// edit exp
-					else if (event.keyCode == KEYCODE_0) {
-						Cheat_Menu.give_current_exp();
-					}
-				}
-				
-			}
-
-
-			// edit stats
-			else if (Cheat_Menu.cheat_selected == 4) {
-				// cycle left actor selection
-				if (event.keyCode == KEYCODE_4) {
-					Cheat_Menu.scroll_left_actor();
-				}
-				// cycle right actor selection
-				else if (event.keyCode == KEYCODE_5 ) {
-					Cheat_Menu.scroll_right_actor();
-				}
-
-
-				// cycle left amount
-				else if (event.keyCode == KEYCODE_6) {
-					Cheat_Menu.move_left_amount();
-				}
-				// cycle right amount
-				else if (event.keyCode == KEYCODE_7) {
-					Cheat_Menu.move_right_amount();
-				}
-
-				else if ($gameActors._data[Cheat_Menu.cheat_selected_actor] && $gameActors._data[Cheat_Menu.cheat_selected_actor]._paramPlus && $gameActors._data[Cheat_Menu.cheat_selected_actor]._paramPlus.length > 0) {
-					// cycle left stat
-					if (event.keyCode == KEYCODE_8) {
-						Cheat_Menu.scroll_left_stat();
-					}
-					// cycle right stat
-					else if (event.keyCode == KEYCODE_9) {
-						Cheat_Menu.scroll_right_stat();
-					}
-
-					// edit stat
-					else if (event.keyCode == KEYCODE_0) {
-						Cheat_Menu.give_current_stat();
-					}
-				}
-				
-			}
-
-			// edit gold
-			else if (Cheat_Menu.cheat_selected == 5) {
-				if (event.keyCode == KEYCODE_4) {
-					Cheat_Menu.move_left_amount();
-				}
-				// cycle right amount
-				else if (event.keyCode == KEYCODE_5) {
-					Cheat_Menu.move_right_amount();
-				}
-
-				// edit gold
-				else if (event.keyCode == KEYCODE_6) {
-					Cheat_Menu.give_current_gold();
+			else if (event.keyCode == KEYCODE_5 ) {
+				if (Cheat_Menu.key_listeners[5]) {
+					Cheat_Menu.key_listeners[5]();
 				}
 			}
-
-			// edit items
-			else if (Cheat_Menu.cheat_selected == 6) {
-				if (event.keyCode == KEYCODE_4) {
-					Cheat_Menu.move_left_amount();
+			else if (event.keyCode == KEYCODE_6 ) {
+				if (Cheat_Menu.key_listeners[6]) {
+					Cheat_Menu.key_listeners[6]();
 				}
-				// cycle right amount
-				else if (event.keyCode == KEYCODE_5) {
-					Cheat_Menu.move_right_amount();
-				}
-
-				// select items
-				else if (event.keyCode == KEYCODE_6) {
-					Cheat_Menu.scroll_left_item();
-				}
-				else if (event.keyCode == KEYCODE_7) {
-					Cheat_Menu.scroll_right_item();
-				}
-
-				// edit items
-				else if (event.keyCode == KEYCODE_8) {
-					Cheat_Menu.give_current_item();
-				}
-
 			}
-
-			// edit weapons
-			else if (Cheat_Menu.cheat_selected == 7) {
-				if (event.keyCode == KEYCODE_4) {
-					Cheat_Menu.move_left_amount();
+			else if (event.keyCode == KEYCODE_7 ) {
+				if (Cheat_Menu.key_listeners[7]) {
+					Cheat_Menu.key_listeners[7]();
 				}
-				// cycle right amount
-				else if (event.keyCode == KEYCODE_5) {
-					Cheat_Menu.move_right_amount();
-				}
-
-				// select weapons
-				else if (event.keyCode == KEYCODE_6) {
-					Cheat_Menu.scroll_left_weapon();
-				}
-				else if (event.keyCode == KEYCODE_7) {
-					Cheat_Menu.scroll_right_weapon();
-				}
-
-				// edit items
-				else if (event.keyCode == KEYCODE_8) {
-					Cheat_Menu.give_current_weapon();
-				}
-
 			}
-
-			// edit armors
-			else if (Cheat_Menu.cheat_selected == 8) {
-				if (event.keyCode == KEYCODE_4) {
-					Cheat_Menu.move_left_amount();
+			else if (event.keyCode == KEYCODE_8 ) {
+				if (Cheat_Menu.key_listeners[8]) {
+					Cheat_Menu.key_listeners[8]();
 				}
-				// cycle right amount
-				else if (event.keyCode == KEYCODE_5) {
-					Cheat_Menu.move_right_amount();
-				}
-
-				// select armor
-				else if (event.keyCode == KEYCODE_6) {
-					Cheat_Menu.scroll_left_armor();
-				}
-				else if (event.keyCode == KEYCODE_7) {
-					Cheat_Menu.scroll_right_armor();
-				}
-
-				// edit items
-				else if (event.keyCode == KEYCODE_8) {
-					Cheat_Menu.give_current_armor();
-				}
-
 			}
-
-			// change movement speed
-			else if (Cheat_Menu.cheat_selected == 9) {
-				if (event.keyCode == KEYCODE_4) {
-					Cheat_Menu.move_left_move_amount();
+			else if (event.keyCode == KEYCODE_9 ) {
+				if (Cheat_Menu.key_listeners[9]) {
+					Cheat_Menu.key_listeners[9]();
 				}
-				// cycle right amount
-				else if (event.keyCode == KEYCODE_5) {
-					Cheat_Menu.move_right_move_amount();
-				}
-
-				// change speed
-				else if (event.keyCode == KEYCODE_6) {
-					Cheat_Menu.update_speed();
-				}
-
 			}
-
-			// clear status effects
-			else if (Cheat_Menu.cheat_selected == 10) {
-				if (event.keyCode == KEYCODE_4) {
-					Cheat_Menu.scroll_left_actor();
+			else if (event.keyCode == KEYCODE_0 ) {
+				if (Cheat_Menu.key_listeners[0]) {
+					Cheat_Menu.key_listeners[0]();
 				}
-				// cycle right amount
-				else if (event.keyCode == KEYCODE_5) {
-					Cheat_Menu.scroll_right_actor();
-				}
-
-				// change speed
-				else if (event.keyCode == KEYCODE_6) {
-					Cheat_Menu.clear_current_actor_states();
-				}
-
 			}
-
-
 		}
 	}
 });
