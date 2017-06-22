@@ -22,6 +22,8 @@ Cheat_Menu.armor_selection = 1;
 Cheat_Menu.move_amounts = [-1, 1];
 Cheat_Menu.move_amount_index = 1;
 
+Cheat_Menu.variable_selection = 0;
+
 
 
 /////////////////////////////////////////////////
@@ -203,6 +205,14 @@ Cheat_Menu.clear_party_states = function() {
 	var members = $gameParty.allMembers();
 	for (var i = 0; i < members.length; i++) {
 		Cheat_Menu.clear_actor_states(members[i]);
+	}
+}
+
+// increase weapon count for party of item, by id
+Cheat_Menu.set_variable = function(variable_id, value) {
+	if ($dataSystem.variables[variable_id] != undefined) {
+		var new_value = $gameVariables.value(variable_id) + value;
+		$gameVariables.setValue(variable_id, new_value);
 	}
 }
 
@@ -396,7 +406,7 @@ Cheat_Menu.append_cheat = function(cheat_text, status_text, key, click_handler) 
 Cheat_Menu.scroll_left_cheat = function() {
 	Cheat_Menu.cheat_selected--;
 	if (Cheat_Menu.cheat_selected < 0) {
-		Cheat_Menu.cheat_selected = 10;
+		Cheat_Menu.cheat_selected = 11;
 	}
 	SoundManager.playSystemSound(0);
 	Cheat_Menu.update_menu();
@@ -404,7 +414,7 @@ Cheat_Menu.scroll_left_cheat = function() {
 
 Cheat_Menu.scroll_right_cheat = function() {
 	Cheat_Menu.cheat_selected++;
-	if (Cheat_Menu.cheat_selected > 10) {
+	if (Cheat_Menu.cheat_selected > 11) {
 		Cheat_Menu.cheat_selected = 0;
 	}
 	SoundManager.playSystemSound(0);
@@ -905,9 +915,54 @@ Cheat_Menu.update_menu = function() {
 		Cheat_Menu.append_actor_selection(4, 5);
 		Cheat_Menu.append_current_state(6);
 	}
+	else if (Cheat_Menu.cheat_selected == 11) {
+		Cheat_Menu.append_cheat_title("Variables");
+		Cheat_Menu.append_amount_selection(4, 5);
+		Cheat_Menu.append_variable_selection(6, 7, 8);
+	}
 
 	Cheat_Menu.position_menu();
 };
+
+Cheat_Menu.scroll_left_variable = function(event) {
+	Cheat_Menu.variable_selection--;
+	if (Cheat_Menu.variable_selection < 0) {
+		Cheat_Menu.variable_selection = $dataSystem.variables.length - 1;
+	}
+	Cheat_Menu.update_menu();
+}
+
+Cheat_Menu.scroll_right_variable = function(event) {
+	Cheat_Menu.variable_selection++;
+	if (Cheat_Menu.variable_selection >= $dataSystem.variables.length) {
+		Cheat_Menu.variable_selection = 0;
+	}
+	Cheat_Menu.update_menu();
+}
+
+Cheat_Menu.set_current_variable = function(event) {
+	Cheat_Menu.set_variable(Cheat_Menu.variable_selection, Cheat_Menu.amounts[Cheat_Menu.amount_index]);
+	SoundManager.playSystemSound(1);
+	Cheat_Menu.update_menu();
+}
+
+Cheat_Menu.append_variable_selection = function(key1, key2, key3) {
+	Cheat_Menu.append_title("Variable");
+	var current_variable = "";
+	if ($dataSystem.variables[Cheat_Menu.variable_selection] && $dataSystem.variables[Cheat_Menu.variable_selection].length > 0) {
+		current_variable = $dataSystem.variables[Cheat_Menu.variable_selection];
+	}
+	else {
+		current_variable = "NULL";
+	}
+
+	Cheat_Menu.append_scroll_selector(current_variable, key1, key2, Cheat_Menu.scroll_left_variable, Cheat_Menu.scroll_right_variable);
+	var current_variable_value = 'NULL';
+	if ($gameVariables.value(Cheat_Menu.variable_selection) != undefined) {
+		current_variable_value = $gameVariables.value(Cheat_Menu.variable_selection);
+	}
+	Cheat_Menu.append_cheat("Value:", current_variable_value, key3, Cheat_Menu.set_current_variable);
+}
 
 // listener to reposition menu
 window.addEventListener("resize", Cheat_Menu.position_menu);
@@ -976,6 +1031,7 @@ window.addEventListener("keydown", function(event) {
 				Cheat_Menu.weapon_selection = 1;
 				Cheat_Menu.armor_selection = 1;
 				Cheat_Menu.move_amount_index = 1;
+				Cheat_Menu.variable_selection = 0;
 
 				// only do this once per load or new game
 				Cheat_Menu.initialized = true;
