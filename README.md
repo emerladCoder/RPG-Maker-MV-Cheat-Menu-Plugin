@@ -53,7 +53,7 @@ Uninstall
 
 Downloads
 ---------
-Download: [mega link](https://mega.nz/#!FkYQwD5B!9S1OUB6ruJn4Jh30J5_y0mN8zNc_9n-mSwKjUl7H2dU)
+Download: [mega link](https://mega.nz/#!99IRVCQS!-m0JFW3G6oht5CUfBwjPOqb8e1VXzJNZTw7yWz9bg4k)
 
 Folder of all versions: [mega link](https://mega.nz/#F!NxQxHJKY!N6-YTgC4B2y5AZVpNgAvdA)
 
