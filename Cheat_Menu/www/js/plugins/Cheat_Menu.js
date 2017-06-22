@@ -208,7 +208,7 @@ Cheat_Menu.clear_party_states = function() {
 	}
 }
 
-// increase weapon count for party of item, by id
+// change game variable value, by id
 Cheat_Menu.set_variable = function(variable_id, value) {
 	if ($dataSystem.variables[variable_id] != undefined) {
 		var new_value = $gameVariables.value(variable_id) + value;
