@@ -20,7 +20,7 @@ Install
 			Run MVPluginPatcher.exe
 				or
 			Manually Add the following to your plugins.js file
-			{"name":"Cheat_Menu","status":true,"description":"","parameters":{}}
+			{"name":"Cheat_Menu_Cursed_Armor","status":true,"description":"","parameters":{}}
 4)	Delete MVPluginPatcher.exe and plugins_patch.txt
 
 
