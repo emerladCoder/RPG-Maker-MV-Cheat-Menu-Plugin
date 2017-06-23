@@ -1,7 +1,7 @@
 RPG Maker MV Cheat Menu Plugin
 ==============================
 
-I've created a plugin for RPG Maker MV that allows users to access a Cheat Menu in game. The controls are all input via the number keys \[0\]\-\[9\] (not the NUMPAD) or the mouse.
+I've created a plugin for RPG Maker MV that allows users to access a Cheat Menu in game. The controls are all input via the number keys \[0\]\-\[9\] (not the NUMPAD) (other keys may be used) or the mouse.
 
 Open the Menu by pressing the \[1\] Key.  
 Move menu to different positions with \` (key with tilde ~)  
@@ -26,7 +26,7 @@ Available Cheats Are
 * Open javascript console/developer tools with F8
  * With this you can edit game Variables and Switches (at your own risk) in the $gameVariables and $gameSwitches, as well as other advanced stuff
 * Open Switch/Variable Debug Menu from playtest Mode with F9
- * Better method for editing the Switches and Variables than using the console
+ * Better/easier method for editing the Switches and Variables than using the console
  
 Install
 -------
@@ -53,7 +53,7 @@ Uninstall
 
 Downloads
 ---------
-Download: [mega link](https://mega.nz/#!FkYQwD5B!9S1OUB6ruJn4Jh30J5_y0mN8zNc_9n-mSwKjUl7H2dU)
+Download: [mega link](https://mega.nz/#!99IRVCQS!-m0JFW3G6oht5CUfBwjPOqb8e1VXzJNZTw7yWz9bg4k)
 
 Folder of all versions: [mega link](https://mega.nz/#F!NxQxHJKY!N6-YTgC4B2y5AZVpNgAvdA)
 
@@ -87,3 +87,4 @@ v15 Added pressing F9 to open the playtest switch/variable debug menu
 v16 Added Party HP manipulation to the set all party HP to 0 or 1 as well as a party full recover (added to previous enemy hp tab)  
 v17 Change to backend for keylistener to make it easier to add/change stuff, most cheats use built in RPG maker function calls now instead of just directly changing the variables (ex. actor._hp calls replaced with actor.gainHp())  
 v18 Fixes to godmode, should be more robust, also fixed crash from v17  
+v19 Fix patcher to work on empty plugins.js, various reworks to backend to allow for extension plugins (see github for cursed armor example), when editing amount now use two button/key scroll for increase decrease instead of allowing negative amounts
