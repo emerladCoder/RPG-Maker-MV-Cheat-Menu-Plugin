@@ -34,6 +34,8 @@ Cheat_Menu.weapon_selection = 1;
 Cheat_Menu.armor_selection = 1;
 Cheat_Menu.move_amount_index = 1;
 
+Cheat_Menu.variable_selection = 0;
+
 
 /////////////////////////////////////////////////
 // Initial values for reseting on new game/load
@@ -52,6 +54,7 @@ Cheat_Menu.initial_values.item_selection = 1;
 Cheat_Menu.initial_values.weapon_selection = 1;
 Cheat_Menu.initial_values.armor_selection = 1;
 Cheat_Menu.initial_values.move_amount_index = 1;
+Cheat_Menu.initial_values.variable_selection = 0;
 
 /////////////////////////////////////////////////
 // Cheat Functions
@@ -232,6 +235,14 @@ Cheat_Menu.clear_party_states = function() {
 	var members = $gameParty.allMembers();
 	for (var i = 0; i < members.length; i++) {
 		Cheat_Menu.clear_actor_states(members[i]);
+	}
+}
+
+// change game variable value, by id
+Cheat_Menu.set_variable = function(variable_id, value) {
+	if ($dataSystem.variables[variable_id] != undefined) {
+		var new_value = $gameVariables.value(variable_id) + value;
+		$gameVariables.setValue(variable_id, new_value);
 	}
 }
 
@@ -973,6 +984,56 @@ Cheat_Menu.append_current_state = function(key1) {
 	Cheat_Menu.append_cheat("Number Effects:", number_states, key1, Cheat_Menu.clear_current_actor_states);
 }
 
+// Left and right scrollers for handling switching between selected variable
+Cheat_Menu.scroll_left_variable = function(event) {
+	Cheat_Menu.variable_selection--;
+	if (Cheat_Menu.variable_selection < 0) {
+		Cheat_Menu.variable_selection = $dataSystem.variables.length - 1;
+	}
+	Cheat_Menu.update_menu();
+}
+
+// Left and right scrollers for handling switching between selected variable
+Cheat_Menu.scroll_right_variable = function(event) {
+	Cheat_Menu.variable_selection++;
+	if (Cheat_Menu.variable_selection >= $dataSystem.variables.length) {
+		Cheat_Menu.variable_selection = 0;
+	}
+	Cheat_Menu.update_menu();
+}
+
+// handlers for the setting the current variable
+Cheat_Menu.increase_current_variable = function(event) {
+	Cheat_Menu.set_variable(Cheat_Menu.variable_selection, Cheat_Menu.amounts[Cheat_Menu.amount_index]);
+	SoundManager.playSystemSound(1);
+	Cheat_Menu.update_menu();
+}
+
+Cheat_Menu.decrease_current_variable = function(event) {
+	Cheat_Menu.set_variable(Cheat_Menu.variable_selection, -Cheat_Menu.amounts[Cheat_Menu.amount_index]);
+	SoundManager.playSystemSound(2);
+	Cheat_Menu.update_menu();
+}
+
+Cheat_Menu.append_variable_selection = function(key1, key2, key3, key4) {
+	Cheat_Menu.append_title("Variable");
+	var current_variable = "";
+	if ($dataSystem.variables[Cheat_Menu.variable_selection] && $dataSystem.variables[Cheat_Menu.variable_selection].length > 0) {
+		current_variable = $dataSystem.variables[Cheat_Menu.variable_selection];
+	}
+	else {
+		current_variable = "NULL";
+	}
+
+	Cheat_Menu.append_scroll_selector(current_variable, key1, key2, Cheat_Menu.scroll_left_variable, Cheat_Menu.scroll_right_variable);
+	var current_variable_value = 'NULL';
+	if ($gameVariables.value(Cheat_Menu.variable_selection) != undefined) {
+		current_variable_value = $gameVariables.value(Cheat_Menu.variable_selection);
+	}
+	Cheat_Menu.append_scroll_selector(current_variable_value, key3, key4, Cheat_Menu.decrease_current_variable, Cheat_Menu.increase_current_variable);
+}
+
+
 //////////////////////////////////////////////////////////////////////////////////
 // Final Functions for building each Menu and function list for updating the menu
 //////////////////////////////////////////////////////////////////////////////////
@@ -1054,6 +1115,12 @@ Cheat_Menu.menus.splice(0, 0, function() {
 	Cheat_Menu.append_actor_selection(4, 5);
 
 	Cheat_Menu.append_godmode_status();
+});
+
+Cheat_Menu.menus.splice(0, 0, function() {
+	Cheat_Menu.append_cheat_title("Variables");
+  Cheat_Menu.append_amount_selection(4, 5);
+  Cheat_Menu.append_variable_selection(6, 7, 8, 9);
 });
 
 
