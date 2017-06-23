@@ -34,7 +34,8 @@ Cheat_Menu.weapon_selection = 1;
 Cheat_Menu.armor_selection = 1;
 Cheat_Menu.move_amount_index = 1;
 
-Cheat_Menu.variable_selection = 0;
+Cheat_Menu.variable_selection = 1;
+Cheat_Menu.switch_selection = 1;
 
 
 /////////////////////////////////////////////////
@@ -54,7 +55,8 @@ Cheat_Menu.initial_values.item_selection = 1;
 Cheat_Menu.initial_values.weapon_selection = 1;
 Cheat_Menu.initial_values.armor_selection = 1;
 Cheat_Menu.initial_values.move_amount_index = 1;
-Cheat_Menu.initial_values.variable_selection = 0;
+Cheat_Menu.initial_values.variable_selection = 1;
+Cheat_Menu.initial_values.switch_selection = 1;
 
 /////////////////////////////////////////////////
 // Cheat Functions
@@ -243,6 +245,13 @@ Cheat_Menu.set_variable = function(variable_id, value) {
 	if ($dataSystem.variables[variable_id] != undefined) {
 		var new_value = $gameVariables.value(variable_id) + value;
 		$gameVariables.setValue(variable_id, new_value);
+	}
+}
+
+// toggle game switch value, by id
+Cheat_Menu.toggle_switch = function(switch_id) {
+	if ($dataSystem.switches[switch_id] != undefined) {
+		$gameSwitches.setValue(switch_id, !$gameSwitches.value(switch_id));
 	}
 }
 
@@ -1015,6 +1024,7 @@ Cheat_Menu.decrease_current_variable = function(event) {
 	Cheat_Menu.update_menu();
 }
 
+// append the variable cheat to the menu
 Cheat_Menu.append_variable_selection = function(key1, key2, key3, key4) {
 	Cheat_Menu.append_title("Variable");
 	var current_variable = "";
@@ -1033,6 +1043,55 @@ Cheat_Menu.append_variable_selection = function(key1, key2, key3, key4) {
 	Cheat_Menu.append_scroll_selector(current_variable_value, key3, key4, Cheat_Menu.decrease_current_variable, Cheat_Menu.increase_current_variable);
 }
 
+// Left and right scrollers for handling switching between selected switch
+Cheat_Menu.scroll_left_switch = function(event) {
+	Cheat_Menu.switch_selection--;
+	if (Cheat_Menu.switch_selection < 0) {
+		Cheat_Menu.switch_selection = $dataSystem.switches.length - 1;
+	}
+	Cheat_Menu.update_menu();
+}
+
+// Left and right scrollers for handling switching between selected switch
+Cheat_Menu.scroll_right_switch = function(event) {
+	Cheat_Menu.switch_selection++;
+	if (Cheat_Menu.switch_selection >= $dataSystem.switches.length) {
+		Cheat_Menu.switch_selection = 0;
+	}
+	Cheat_Menu.update_menu();
+}
+
+// handler for the toggling the current switch
+Cheat_Menu.toggle_current_switch = function(event) {
+	Cheat_Menu.toggle_switch(Cheat_Menu.switch_selection);
+	if ($gameSwitches.value(Cheat_Menu.switch_selection)) {
+		SoundManager.playSystemSound(1);
+	}
+	else {
+		SoundManager.playSystemSound(2);
+	}
+	Cheat_Menu.update_menu();
+}
+
+// append the switch cheat to the menu
+Cheat_Menu.append_switch_selection = function(key1, key2, key3) {
+	Cheat_Menu.append_title("Switch");
+	var current_switch = "";
+	if ($dataSystem.switches[Cheat_Menu.switch_selection] && $dataSystem.switches[Cheat_Menu.switch_selection].length > 0) {
+		current_switch = $dataSystem.switches[Cheat_Menu.switch_selection];
+	}
+	else {
+		current_switch = "NULL";
+	}
+
+	Cheat_Menu.append_scroll_selector(current_switch, key1, key2, Cheat_Menu.scroll_left_switch, Cheat_Menu.scroll_right_switch);
+	var current_switch_value = 'NULL';
+	if ($gameSwitches.value(Cheat_Menu.switch_selection) != undefined) {
+		current_switch_value = $gameSwitches.value(Cheat_Menu.switch_selection);
+	}
+	Cheat_Menu.append_cheat("Status:", current_switch_value, key3, Cheat_Menu.toggle_current_switch);
+}
+
 
 //////////////////////////////////////////////////////////////////////////////////
 // Final Functions for building each Menu and function list for updating the menu
@@ -1046,6 +1105,17 @@ if (typeof Cheat_Menu.menus == "undefined") {
 //	appended in reverse order at the front so they will
 //	appear first no matter the plugin load order for any
 //	extension plugins
+
+Cheat_Menu.menus.splice(0, 0, function() {
+	Cheat_Menu.append_cheat_title("Switches");
+	Cheat_Menu.append_switch_selection(6, 7, 8);
+});
+
+Cheat_Menu.menus.splice(0, 0, function() {
+	Cheat_Menu.append_cheat_title("Variables");
+	Cheat_Menu.append_amount_selection(4, 5);
+	Cheat_Menu.append_variable_selection(6, 7, 8, 9);
+});
 
 Cheat_Menu.menus.splice(0, 0, function() {
 	Cheat_Menu.append_cheat_title("Clear States");
@@ -1115,12 +1185,6 @@ Cheat_Menu.menus.splice(0, 0, function() {
 	Cheat_Menu.append_actor_selection(4, 5);
 
 	Cheat_Menu.append_godmode_status();
-});
-
-Cheat_Menu.menus.splice(0, 0, function() {
-	Cheat_Menu.append_cheat_title("Variables");
-  Cheat_Menu.append_amount_selection(4, 5);
-  Cheat_Menu.append_variable_selection(6, 7, 8, 9);
 });
 
 
