@@ -6,18 +6,10 @@
 //	this is required in all plugins
 //	this allows the plugin and the original Cheat_Menu 
 //	plugin to be loaded in any order
-if (typeof Cheat_Menu == "undefined") {
-	Cheat_Menu = {};
-}
-if (typeof Cheat_Menu.initial_values == "undefined") {
-	Cheat_Menu.initial_values = {};
-}
-if (typeof Cheat_Menu.menus == "undefined") {
-	Cheat_Menu.menus = [];
-}
-if (typeof Cheat_Menu.keyCodes == "undefined") {
-	Cheat_Menu.keyCodes = {};
-}
+if (typeof Cheat_Menu == "undefined") { Cheat_Menu = {}; }
+if (typeof Cheat_Menu.initial_values == "undefined") { Cheat_Menu.initial_values = {}; }
+if (typeof Cheat_Menu.menus == "undefined") { Cheat_Menu.menus = []; }
+if (typeof Cheat_Menu.keyCodes == "undefined") { Cheat_Menu.keyCodes = {}; }
 
 
 //////////////////////////
@@ -108,7 +100,7 @@ Cheat_Menu.client_stamina_down = function() {
 //
 //		text: string 
 // 		key1,key2: key mapping
-//		scroll_left_handler, scroll_right_handler: functions
+//		scroll_handler: single function that handles the left and right scroll arguments should be (direction, event)
 //
 //		Provided selectors include:
 //
@@ -135,72 +127,75 @@ Cheat_Menu.client_stamina_down = function() {
 // Here I creat the left and right handlers for scrolling between wolfzq's stats
 //	all these do is move my selection index around for the array that I have for
 //	the list of stats
-Cheat_Menu.scroll_left_wolf_stat_1 = function(event) {
-	Cheat_Menu.wolf_stat_1_selection--;
-	if (Cheat_Menu.wolf_stat_1_selection < 0) {
-        Cheat_Menu.wolf_stat_1_selection = Cheat_Menu.wolf_stats_1.length;
+// The handlers determine if they are being called by left or right clicks or button
+//	presses by the checking the direction argument to see if it is "left" or "right"
+Cheat_Menu.scroll_wolf_stat_1 = function(direction, event) {
+	if (direction == "left") {
+		Cheat_Menu.wolf_stat_1_selection--;
+		if (Cheat_Menu.wolf_stat_1_selection < 0) {
+			Cheat_Menu.wolf_stat_1_selection = Cheat_Menu.wolf_stats_1.length;
+		}
 	}
+	else {
+		Cheat_Menu.wolf_stat_1_selection++;
+		if (Cheat_Menu.wolf_stat_1_selection >= Cheat_Menu.wolf_stats_1.length) {
+			Cheat_Menu.wolf_stat_1_selection = 0;
+		}
+	}
+	SoundManager.playSystemSound(0); // neurtral menu/open sound
 	Cheat_Menu.update_menu();	// if any of these functions should refresh the menu call this 
 }
 
-// the right counterpart for the above function
-Cheat_Menu.scroll_right_wolf_stat_1 = function(event) {
-	Cheat_Menu.wolf_stat_1_selection++;
-    if (Cheat_Menu.wolf_stat_1_selection >= Cheat_Menu.wolf_stats_1.length) {
-        Cheat_Menu.wolf_stat_1_selection = 0;
-    }
-	Cheat_Menu.update_menu();
-}
-
-// Again creating the handlers, but this time for the other set of stats
-Cheat_Menu.scroll_left_wolf_stat_2 = function(event) {
-	Cheat_Menu.wolf_stat_2_selection--;
-	if (Cheat_Menu.wolf_stat_2_selection < 0) {
-        Cheat_Menu.wolf_stat_2_selection = Cheat_Menu.wolf_stats_2.length;
+// Again creating the handler, but this time for the other set of stats
+Cheat_Menu.scroll_wolf_stat_2 = function(direction, event) {
+	if (direction == "left") {
+		Cheat_Menu.wolf_stat_2_selection--;
+		if (Cheat_Menu.wolf_stat_2_selection < 0) {
+			Cheat_Menu.wolf_stat_2_selection = Cheat_Menu.wolf_stats_2.length;
+		}
 	}
-	Cheat_Menu.update_menu();
-}
-
-// the right counterpart for the above function
-
-Cheat_Menu.scroll_right_wolf_stat_2 = function(event) {
-	Cheat_Menu.wolf_stat_2_selection++;
-    if (Cheat_Menu.wolf_stat_2_selection >= Cheat_Menu.wolf_stats_2.length) {
-        Cheat_Menu.wolf_stat_2_selection = 0;
-    }
+	else {
+		Cheat_Menu.wolf_stat_2_selection++;
+		if (Cheat_Menu.wolf_stat_2_selection >= Cheat_Menu.wolf_stats_2.length) {
+			Cheat_Menu.wolf_stat_2_selection = 0;
+		}
+	}
+	SoundManager.playSystemSound(0); // neurtral menu/open sound
+	
 	Cheat_Menu.update_menu();
 }
 
 //	The handlers for updating the stats
-//		these are called what call the cheat functions
+//		these are called what call the cheat functions in the above section
 //		I generally also play a sound as well, but that isn't needed
-Cheat_Menu.give_current_wolf_stat_1 = function() {
-    Cheat_Menu.give_wolf_stat_1(Cheat_Menu.amounts[Cheat_Menu.amount_index]);
-	Cheat_Menu.update_menu();
 
-	SoundManager.playSystemSound(1); // positive sound
+// For amounts I now use scroll events, again the direction of the 
+//	calling function is determined by the direction argument
+Cheat_Menu.apply_current_wolf_stat_1 = function(direction, event) {
+	var amount = Cheat_Menu.amounts[Cheat_Menu.amount_index];
+	if (direction == "left") {
+		amount = -amount;
+		SoundManager.playSystemSound(2); // negative sound
+	}
+	else {
+		SoundManager.playSystemSound(1); // positive sound
+	}
+    Cheat_Menu.give_wolf_stat_1(amount);
+	Cheat_Menu.update_menu();
 }
 
-Cheat_Menu.remove_current_wolf_stat_1 = function() {
-    Cheat_Menu.give_wolf_stat_1(-Cheat_Menu.amounts[Cheat_Menu.amount_index]);
+//	The handler for updating the other stats
+Cheat_Menu.apply_current_wolf_stat_2 = function(direction, event) {
+	var amount = Cheat_Menu.amounts[Cheat_Menu.amount_index];
+	if (direction == "left") {
+		amount = -amount;
+		SoundManager.playSystemSound(2); // negative sound
+	}
+	else {
+		SoundManager.playSystemSound(1); // positive sound
+	}
+    Cheat_Menu.give_wolf_stat_2(amount);
 	Cheat_Menu.update_menu();
-
-	SoundManager.playSystemSound(2); // negative sound
-}
-
-//	The handlers for updating the other stats
-Cheat_Menu.give_current_wolf_stat_2 = function() {
-    Cheat_Menu.give_wolf_stat_2(Cheat_Menu.amounts[Cheat_Menu.amount_index]);
-	Cheat_Menu.update_menu();
-
-	SoundManager.playSystemSound(1);
-}
-
-Cheat_Menu.remove_current_wolf_stat_2 = function() {
-    Cheat_Menu.give_wolf_stat_2(-Cheat_Menu.amounts[Cheat_Menu.amount_index]);
-	Cheat_Menu.update_menu();
-
-	SoundManager.playSystemSound(2);
 }
 
 // The functions that append each of the stat menus
@@ -210,11 +205,11 @@ Cheat_Menu.append_wolf_stat_1_selection = function(key1, key2, key3, key4) {
 	var stat_string = "" + $w._paramsName[Cheat_Menu.wolf_stats_1[Cheat_Menu.wolf_stat_1_selection]];
 
 	// a scroll selector with the left and right scrolling functions
-	Cheat_Menu.append_scroll_selector(stat_string, key1, key2, Cheat_Menu.scroll_left_wolf_stat_1, Cheat_Menu.scroll_right_wolf_stat_1);
+	Cheat_Menu.append_scroll_selector(stat_string, key1, key2, Cheat_Menu.scroll_wolf_stat_1);
 	var current_value = "" + $w._params[Cheat_Menu.wolf_stats_1[Cheat_Menu.wolf_stat_1_selection]];
 
 	// a cheat function
-	Cheat_Menu.append_scroll_selector(current_value, key3, key4, Cheat_Menu.remove_current_wolf_stat_1, Cheat_Menu.give_current_wolf_stat_1);
+	Cheat_Menu.append_scroll_selector(current_value, key3, key4, Cheat_Menu.apply_current_wolf_stat_1);
 }
 
 // Same as above but for the other stats
@@ -223,29 +218,19 @@ Cheat_Menu.append_wolf_stat_2_selection = function(key1, key2, key3, key4) {
 
 	var stat_string = "" + $w._paramsCountName[Cheat_Menu.wolf_stats_2[Cheat_Menu.wolf_stat_2_selection]];
 
-	Cheat_Menu.append_scroll_selector(stat_string, key1, key2, Cheat_Menu.scroll_left_wolf_stat_2, Cheat_Menu.scroll_right_wolf_stat_2);
+	Cheat_Menu.append_scroll_selector(stat_string, key1, key2, Cheat_Menu.scroll_wolf_stat_2);
 	var current_value = "" + $w._paramsCount[Cheat_Menu.wolf_stats_2[Cheat_Menu.wolf_stat_2_selection]];
 
-	Cheat_Menu.append_scroll_selector(current_value, key3, key4, Cheat_Menu.remove_current_wolf_stat_2, Cheat_Menu.give_current_wolf_stat_2);
+	Cheat_Menu.append_scroll_selector(current_value, key3, key4, Cheat_Menu.apply_current_wolf_stat_2);
 }
 
-// Here I create functions to append each cheat for the 3rd menu
+// Here I create function to append each cheat for the 3rd menu
 //	these are for an ingame minigame
-//	this could easily be simplified to one function
-Cheat_Menu.append_player_feel_down = function(key1) {
+Cheat_Menu.append_minigame_cheats = function(key1, key2, key3, key4) {
     Cheat_Menu.append_cheat("Player Feel Down", "Activate", key1, Cheat_Menu.player_feel_down);
-}
-
-Cheat_Menu.append_player_stamina_full = function(key1) {
-    Cheat_Menu.append_cheat("Player Stamina Full", "Activate", key1, Cheat_Menu.player_stamina_full);
-}
-
-Cheat_Menu.append_client_feel_up = function(key1) {
-    Cheat_Menu.append_cheat("Client Feel Up", "Activate", key1, Cheat_Menu.client_feel_up);
-}
-
-Cheat_Menu.append_client_stamina_down = function(key1) {
-    Cheat_Menu.append_cheat("Client Stamina Down", "Activate", key1, Cheat_Menu.client_stamina_down);
+	Cheat_Menu.append_cheat("Player Stamina Full", "Activate", key2, Cheat_Menu.player_stamina_full);
+	Cheat_Menu.append_cheat("Client Feel Up", "Activate", key3, Cheat_Menu.client_feel_up);
+	Cheat_Menu.append_cheat("Client Stamina Down", "Activate", key4, Cheat_Menu.client_stamina_down);
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -261,6 +246,7 @@ Cheat_Menu.menus[Cheat_Menu.menus.length] = function() {
 	//	provides the scroll for switching between cheats
     Cheat_Menu.append_cheat_title("Cursed Stats 1"); 
 
+	// bulding the list of stats if they haven't been built already, this is game specific
 	if (Cheat_Menu.wolf_stats_1.length == 0) {
 		for (var name in $w._params) {
 			Cheat_Menu.wolf_stats_1[Cheat_Menu.wolf_stats_1.length] = name;
@@ -274,6 +260,7 @@ Cheat_Menu.menus[Cheat_Menu.menus.length] = function() {
 Cheat_Menu.menus[Cheat_Menu.menus.length] = function() {
     Cheat_Menu.append_cheat_title("Cursed Stats 2");
 
+	// bulding the list of stats if they haven't been built already, this is game specific
 	if (Cheat_Menu.wolf_stats_2.length == 0) {
 		for (var name in $w._paramsCount) {
 			Cheat_Menu.wolf_stats_2[Cheat_Menu.wolf_stats_2.length] = name;
@@ -285,18 +272,15 @@ Cheat_Menu.menus[Cheat_Menu.menus.length] = function() {
 };
 
 Cheat_Menu.menus[Cheat_Menu.menus.length] = function() {
-    Cheat_Menu.append_cheat_title("Cursed Prostitute Cheats");
-    Cheat_Menu.append_player_feel_down(4);
-    Cheat_Menu.append_player_stamina_full(5);
-    Cheat_Menu.append_client_feel_up(6);
-    Cheat_Menu.append_client_stamina_down(7);
+    Cheat_Menu.append_cheat_title("Cursed Minigame Cheats");
+    Cheat_Menu.append_minigame_cheats(4, 5, 6, 7);
 };
 
 // Misc
 // New KeyCodes can be added with
 // Cheat_Menu.keyCodes.NAME = {keyCode: KEYCODE, key_listener: MAPPING};
-//		NAME: is the name for the mapping
-//		KEYCODE: is the keyCode of the button press for the keydown event
+//		NAME: is the name for the mapping (can be any valid variable name)
+//		KEYCODE: is the keyCode (number) of the button press for the keydown event
 //		MAPPING: is the char/num/string mapping you pass into the append function
 //					this will also appear as the text on the menu
 
