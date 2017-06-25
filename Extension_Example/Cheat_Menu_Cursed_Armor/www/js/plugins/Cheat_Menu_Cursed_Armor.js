@@ -122,6 +122,19 @@ Cheat_Menu.client_stamina_down = function() {
 //		status_text: string 
 //		key: key mapping
 //		click_handler: function
+//
+//
+////Cheat_Menu.append_title(title) 
+//		Insert a title row
+//		A row in the menu that is just text
+//		title: string
+//
+//
+////Cheat_Menu.append_description(text) 
+//		Insert a desciption row
+//		A row in the menu that is just text (smaller text than than title)
+//		text: string
+
 
 
 // Here I creat the left and right handlers for scrolling between wolfzq's stats

@@ -35,6 +35,10 @@ Cheat_Menu.move_amount_index = 1;
 Cheat_Menu.variable_selection = 1;
 Cheat_Menu.switch_selection = 1;
 
+Cheat_Menu.saved_positions = [{m: -1, x: -1, y: -1}, {m: -1, x: -1, y: -1}, {m: -1, x: -1, y: -1}];
+
+Cheat_Menu.teleport_location = {m: 1, x: 0, y: 0};
+
 
 /////////////////////////////////////////////////
 // Initial values for reseting on new game/load
@@ -53,6 +57,8 @@ Cheat_Menu.initial_values.armor_selection = 1;
 Cheat_Menu.initial_values.move_amount_index = 1;
 Cheat_Menu.initial_values.variable_selection = 1;
 Cheat_Menu.initial_values.switch_selection = 1;
+Cheat_Menu.initial_values.saved_positions = [{m: -1, x: -1, y: -1}, {m: -1, x: -1, y: -1}, {m: -1, x: -1, y: -1}];
+Cheat_Menu.initial_values.teleport_location = {m: 1, x: 0, y: 0};
 
 /////////////////////////////////////////////////
 // Cheat Functions
@@ -251,6 +257,12 @@ Cheat_Menu.toggle_switch = function(switch_id) {
 	}
 }
 
+// Change location by map id, and x, y position
+Cheat_Menu.teleport = function(map_id, x_pos, y_pos) {
+	$gamePlayer.reserveTransfer(map_id, x_pos, y_pos, $gamePlayer.direction(), 0);
+	$gamePlayer.setPosition(x_pos, y_pos);
+}
+
 /////////////////////////////////////////////////
 // Cheat Menu overlay
 /////////////////////////////////////////////////
@@ -390,7 +402,7 @@ Cheat_Menu.position_menu = function(event) {
 //	<-[key1] text [key2]->
 //	scrolling is handled by scroll_left_handler and scroll_right_handler functions
 //	text: string 
-// 	key1,key2: key mapping
+//	key1,key2: key mapping
 //	scroll_handler: single function that handles the left and right scroll arguments should be (direction, event)
 Cheat_Menu.append_scroll_selector = function(text, key1, key2, scroll_handler) {
 	var scroll_selector = Cheat_Menu.overlay.insertRow();
@@ -418,7 +430,7 @@ Cheat_Menu.append_scroll_selector = function(text, key1, key2, scroll_handler) {
 }
 
 // Insert a title row
-// 	A row in the menu that is just text
+//	A row in the menu that is just text
 //	title: string
 Cheat_Menu.append_title = function(title) {
 	var title_row = Cheat_Menu.overlay.insertRow();
@@ -429,6 +441,20 @@ Cheat_Menu.append_title = function(title) {
 	temp = title_row.insertCell()
 	temp.className = "cheat_menu_cell_title";
 	title_text.innerHTML = title;
+}
+
+// Insert a desciption row
+//	A row in the menu that is just text (smaller than title)
+//	text: string
+Cheat_Menu.append_description = function(text) {
+	var title_row = Cheat_Menu.overlay.insertRow();
+	var temp = title_row.insertCell()
+	temp.className = "cheat_menu_cell";
+	var title_text = title_row.insertCell();
+	title_text.className = "cheat_menu_cell";
+	temp = title_row.insertCell()
+	temp.className = "cheat_menu_cell";
+	title_text.innerHTML = text;
 }
 
 // Append a cheat with some handler to activate
@@ -1076,6 +1102,139 @@ Cheat_Menu.append_switch_selection = function(key1, key2, key3) {
 	Cheat_Menu.append_cheat("Status:", current_switch_value, key3, Cheat_Menu.toggle_current_switch);
 }
 
+// handler for saving positions
+Cheat_Menu.save_position = function(pos_num, event) {
+	Cheat_Menu.saved_positions[pos_num].m = $gameMap.mapId();
+	Cheat_Menu.saved_positions[pos_num].x = $gamePlayer.x;
+	Cheat_Menu.saved_positions[pos_num].y = $gamePlayer.y;
+
+	SoundManager.playSystemSound(1);
+	Cheat_Menu.update_menu();
+}
+
+// handler for loading/recalling positions
+Cheat_Menu.recall_position = function(pos_num, event) {
+	if (Cheat_Menu.saved_positions[pos_num].m != -1) {
+		Cheat_Menu.teleport(Cheat_Menu.saved_positions[pos_num].m, Cheat_Menu.saved_positions[pos_num].x, Cheat_Menu.saved_positions[pos_num].y);
+		SoundManager.playSystemSound(1);
+	}
+	else {
+		SoundManager.playSystemSound(2);
+	}
+	Cheat_Menu.update_menu();
+}
+
+// append the save/recall cheat to the menu
+Cheat_Menu.append_save_recall = function (key1, key2, key3, key4, key5, key6) {
+	if ($dataMapInfos[$gameMap.mapId()]) {
+		Cheat_Menu.append_title("Current Position: ");
+
+		var current_map = "" + $gameMap.mapId() + ": " + $dataMapInfos[$gameMap.mapId()].name;
+		Cheat_Menu.append_description(current_map);
+
+		var map_pos = "(" + $gamePlayer.x + ", " + $gamePlayer.y + ")";
+		Cheat_Menu.append_description(map_pos);
+
+		var cur_key = 1;
+		for (var i = 0; i < Cheat_Menu.saved_positions.length; i++) {
+			Cheat_Menu.append_title("Position " + (i+1));
+
+			var map_text;
+			var pos_text;
+			if (Cheat_Menu.saved_positions[i].m != -1) {
+				map_text = "" + Cheat_Menu.saved_positions[i].m + ": " + $dataMapInfos[Cheat_Menu.saved_positions[i].m].name;
+				pos_text = "(" + Cheat_Menu.saved_positions[i].x + ", " + Cheat_Menu.saved_positions[i].y + ")";
+			} 
+			else {
+				map_text = "NULL";
+				pos_text = "NULL"
+			}
+
+			Cheat_Menu.append_cheat("Save:", map_text, eval("key" + cur_key), Cheat_Menu.save_position.bind(null, i));
+			cur_key++;
+
+			Cheat_Menu.append_cheat("Recall:", pos_text, eval("key" + cur_key), Cheat_Menu.recall_position.bind(null, i));
+			cur_key++;
+		}
+	}
+}
+
+// Left and right scrollers for handling switching between target teleport map
+Cheat_Menu.scroll_map_teleport_selection = function(direction, event) {
+	if (direction == "left") {
+		Cheat_Menu.teleport_location.m--;
+		if (Cheat_Menu.teleport_location.m < 1) {
+			Cheat_Menu.teleport_location.m = $dataMapInfos.length - 1;
+		}
+	}
+	else {
+		Cheat_Menu.teleport_location.m++;
+		if (Cheat_Menu.teleport_location.m >= $dataMapInfos.length) {
+			Cheat_Menu.teleport_location.m = 1;
+		}
+	}
+
+	SoundManager.playSystemSound(0);
+	Cheat_Menu.update_menu();
+}
+
+// Left and right scrollers for handling switching between target teleport x coord
+Cheat_Menu.scroll_x_teleport_selection = function(direction, event) {
+	if (direction == "left") {
+		Cheat_Menu.teleport_location.x--;
+		if (Cheat_Menu.teleport_location.x < 0) {
+			Cheat_Menu.teleport_location.x = 255;
+		}
+	}
+	else {
+		Cheat_Menu.teleport_location.x++;
+		if (Cheat_Menu.teleport_location.x > 255) {
+			Cheat_Menu.teleport_location.x = 0;
+		}
+	}
+
+	SoundManager.playSystemSound(0);
+	Cheat_Menu.update_menu();
+}
+
+// Left and right scrollers for handling switching between target teleport y coord
+Cheat_Menu.scroll_y_teleport_selection = function(direction, event) {
+	if (direction == "left") {
+		Cheat_Menu.teleport_location.y--;
+		if (Cheat_Menu.teleport_location.y < 0) {
+			Cheat_Menu.teleport_location.y = 255;
+		}
+	}
+	else {
+		Cheat_Menu.teleport_location.y++;
+		if (Cheat_Menu.teleport_location.y > 255) {
+			Cheat_Menu.teleport_location.y = 0;
+		}
+	}
+
+	SoundManager.playSystemSound(0);
+	Cheat_Menu.update_menu();
+}
+
+// handler for teleporting to targed map and location
+Cheat_Menu.teleport_current_location = function(event) {
+	Cheat_Menu.teleport(Cheat_Menu.teleport_location.m, Cheat_Menu.teleport_location.x, Cheat_Menu.teleport_location.y);
+	SoundManager.playSystemSound(1);
+	Cheat_Menu.update_menu();
+}
+
+// append the teleport cheat to the menu
+Cheat_Menu.append_teleport = function (key1, key2, key3, key4, key5, key6, key7) {
+	var current_map = "" + Cheat_Menu.teleport_location.m + ": " + $dataMapInfos[Cheat_Menu.teleport_location.m].name;
+	Cheat_Menu.append_scroll_selector(current_map, key1, key2, Cheat_Menu.scroll_map_teleport_selection);
+
+	Cheat_Menu.append_scroll_selector("X: " + Cheat_Menu.teleport_location.x, key3, key4, Cheat_Menu.scroll_x_teleport_selection);
+
+	Cheat_Menu.append_scroll_selector("Y: " + Cheat_Menu.teleport_location.y, key5, key6, Cheat_Menu.scroll_y_teleport_selection);
+
+	Cheat_Menu.append_cheat("Teleport", "Activate", key7, Cheat_Menu.teleport_current_location);
+}
+
 
 //////////////////////////////////////////////////////////////////////////////////
 // Final Functions for building each Menu and function list for updating the menu
@@ -1089,8 +1248,18 @@ if (typeof Cheat_Menu.menus == "undefined") { Cheat_Menu.menus = []; }
 //	extension plugins
 
 Cheat_Menu.menus.splice(0, 0, function() {
+	Cheat_Menu.append_cheat_title("Teleport");
+	Cheat_Menu.append_teleport(4, 5, 6, 7, 8, 9, 0);
+});
+
+Cheat_Menu.menus.splice(0, 0, function() {
+	Cheat_Menu.append_cheat_title("Save and Recall");
+	Cheat_Menu.append_save_recall(4, 5, 6, 7, 8, 9);
+});
+
+Cheat_Menu.menus.splice(0, 0, function() {
 	Cheat_Menu.append_cheat_title("Switches");
-	Cheat_Menu.append_switch_selection(6, 7, 8);
+	Cheat_Menu.append_switch_selection(4, 5, 6);
 });
 
 Cheat_Menu.menus.splice(0, 0, function() {
@@ -1284,7 +1453,7 @@ window.addEventListener("keydown", function(event) {
 
 			else {
 				for (var keyCode in Cheat_Menu.keyCodes) {
-					if (event.keyCode == Cheat_Menu.keyCodes[keyCode].keyCode) {
+					if (Cheat_Menu.key_listeners[Cheat_Menu.keyCodes[keyCode].key_listener] && event.keyCode == Cheat_Menu.keyCodes[keyCode].keyCode) {
 						Cheat_Menu.key_listeners[Cheat_Menu.keyCodes[keyCode].key_listener](event);
 					}
 				}
