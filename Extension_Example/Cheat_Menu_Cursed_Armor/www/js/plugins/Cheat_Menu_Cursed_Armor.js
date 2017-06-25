@@ -37,6 +37,10 @@ Cheat_Menu.wolf_stats_2 = [];
 
 // Here we can specifiy the initial value for any Cheat_Menu variables defined above
 //	this is applied on game load and new games
+// All values below are the inital values for a new saved game
+//	upon loading a saved game these values will be loaded from the
+//	save game if possible overwriting the below values
+//	Because of this all of these variables should be non recursive
 
 // In this case I want my indexs for my selection to reset to the 
 //	first item in each list
