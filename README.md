@@ -24,6 +24,9 @@ Available Cheats Are
 * Change player movement speed
 * Clear Status/States Effects
 * Edit Variables/Switches
+* Save/Recall Location and Teleport
+  * Be careful not to skip game events
+  * If you teleport off the map lower X,Y and teleport again to fix it.
 * Open javascript console/developer tools with F8
   * With this you can edit game Variables and Switches (at your own risk) in the $gameVariables and $gameSwitches, as well as other advanced stuff
 * Open Switch/Variable Debug Menu from playtest Mode with F9
@@ -42,7 +45,7 @@ I've tested this to work with Cursed Armor and 魔王イリスの逆襲[RJ176175
 Install
 -------
 
-* Unpack Game if needed (if you only have a Game.exe with no /www folder or various dll's).
+* Unpack Game if needed (if you have a single large Game.exe with no /www folder, etc.).
   * I use this tool by Kao: [link](https://emerladcoder.github.io/Files/EnigmaVBUnpacker_v0.41a.zip)
     * Select GameFolder/Game.exe and hit unpack
     * Rename GameFolder/%DEFAULT FOLDER% to something without the % signs
@@ -59,12 +62,33 @@ Install
       * Manually Add the following to your plugins.js file
         * {"name":"Cheat_Menu","status":true,"description":"","parameters":{}}
  * Delete MVPluginPatcher.exe and plugins_patch.txt
+
+Some games might have have altered the plugin loading mechanism (for example using a single composite plugin to save space). In this case you should open the GameFolder/www/js/main.js and insert the code as shown below in order to get any extra plugins to load.
+
+```javascript
+//=============================================================================
+// main.js
+//=============================================================================
+
+PluginManager.setup($plugins);
+
+// Insert the code below, change plugin name if loading something besides Cheat_Menu
+PluginManager._path= 'js/plugins/'; 
+PluginManager.loadScript('Cheat_Menu.js');
+// End Insert
+
+window.onload = function() {
+    SceneManager.run(Scene_Boot);
+};
+
+```
  
 Uninstall
 ---------
 
 * Delete www/js/plugins/Cheat_Menu.js and www/js/plugins/Cheat_Menu.css
 * Remove plugin entry from www/js/plugins.js
+  * Be sure to remove the comma from new last entry if this plugin was last in the list
   * Ideally you can just restore you backup of plugins.js
 * Delete MVPluginPatcher.exe and plugins_patch.txt if you haven't already
 
