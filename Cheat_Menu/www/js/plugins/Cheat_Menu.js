@@ -23,15 +23,6 @@ Cheat_Menu.armor_selection = 1;
 Cheat_Menu.move_amounts = [0.5, 1, 1.5, 2];
 Cheat_Menu.move_amount_index = 1;
 
-Cheat_Menu.cheat_selected = 0;
-Cheat_Menu.cheat_selected_actor = 1;
-Cheat_Menu.amount_index = 6;
-Cheat_Menu.stat_selection = 0;
-Cheat_Menu.item_selection = 1;
-Cheat_Menu.weapon_selection = 1;
-Cheat_Menu.armor_selection = 1;
-Cheat_Menu.move_amount_index = 1;
-
 Cheat_Menu.variable_selection = 1;
 Cheat_Menu.switch_selection = 1;
 
@@ -1132,36 +1123,46 @@ Cheat_Menu.recall_position = function(pos_num, event) {
 
 // append the save/recall cheat to the menu
 Cheat_Menu.append_save_recall = function (key1, key2, key3, key4, key5, key6) {
-	if ($dataMapInfos[$gameMap.mapId()]) {
-		Cheat_Menu.append_title("Current Position: ");
+	
+	Cheat_Menu.append_title("Current Position: ");
 
+	if ($dataMapInfos[$gameMap.mapId()] && $dataMapInfos[$gameMap.mapId()].name) {
 		var current_map = "" + $gameMap.mapId() + ": " + $dataMapInfos[$gameMap.mapId()].name;
 		Cheat_Menu.append_description(current_map);
 
 		var map_pos = "(" + $gamePlayer.x + ", " + $gamePlayer.y + ")";
 		Cheat_Menu.append_description(map_pos);
+	}
+	else {
+		Cheat_Menu.append_description("NULL");
+	}
 
-		var cur_key = 1;
-		for (var i = 0; i < Cheat_Menu.saved_positions.length; i++) {
-			Cheat_Menu.append_title("Position " + (i+1));
+	var cur_key = 1;
+	for (var i = 0; i < Cheat_Menu.saved_positions.length; i++) {
+		Cheat_Menu.append_title("Position " + (i+1));
 
-			var map_text;
-			var pos_text;
-			if (Cheat_Menu.saved_positions[i].m != -1) {
-				map_text = "" + Cheat_Menu.saved_positions[i].m + ": " + $dataMapInfos[Cheat_Menu.saved_positions[i].m].name;
-				pos_text = "(" + Cheat_Menu.saved_positions[i].x + ", " + Cheat_Menu.saved_positions[i].y + ")";
-			} 
-			else {
-				map_text = "NULL";
-				pos_text = "NULL"
+		var map_text;
+		var pos_text;
+		if (Cheat_Menu.saved_positions[i].m != -1) {
+			map_text = "" + Cheat_Menu.saved_positions[i].m + ": ";
+			if($dataMapInfos[Cheat_Menu.saved_positions[i].m].name) {
+				map_text += $dataMapInfos[Cheat_Menu.saved_positions[i].m].name;
 			}
-
-			Cheat_Menu.append_cheat("Save:", map_text, eval("key" + cur_key), Cheat_Menu.save_position.bind(null, i));
-			cur_key++;
-
-			Cheat_Menu.append_cheat("Recall:", pos_text, eval("key" + cur_key), Cheat_Menu.recall_position.bind(null, i));
-			cur_key++;
+			else {
+				map_text += "NULL";
+			}
+			pos_text = "(" + Cheat_Menu.saved_positions[i].x + ", " + Cheat_Menu.saved_positions[i].y + ")";
+		} 
+		else {
+			map_text = "NULL";
+			pos_text = "NULL"
 		}
+
+		Cheat_Menu.append_cheat("Save:", map_text, eval("key" + cur_key), Cheat_Menu.save_position.bind(null, i));
+		cur_key++;
+
+		Cheat_Menu.append_cheat("Recall:", pos_text, eval("key" + cur_key), Cheat_Menu.recall_position.bind(null, i));
+		cur_key++;
 	}
 };
 
@@ -1231,7 +1232,15 @@ Cheat_Menu.teleport_current_location = function(event) {
 
 // append the teleport cheat to the menu
 Cheat_Menu.append_teleport = function (key1, key2, key3, key4, key5, key6, key7) {
-	var current_map = "" + Cheat_Menu.teleport_location.m + ": " + $dataMapInfos[Cheat_Menu.teleport_location.m].name;
+	var current_map = "" + Cheat_Menu.teleport_location.m + ": ";
+
+	if ($dataMapInfos[Cheat_Menu.teleport_location.m] && $dataMapInfos[Cheat_Menu.teleport_location.m].name) {
+		current_map += $dataMapInfos[Cheat_Menu.teleport_location.m].name;
+	}
+	else {
+		current_map += "NULL";
+	}
+
 	Cheat_Menu.append_scroll_selector(current_map, key1, key2, Cheat_Menu.scroll_map_teleport_selection);
 
 	Cheat_Menu.append_scroll_selector("X: " + Cheat_Menu.teleport_location.x, key3, key4, Cheat_Menu.scroll_x_teleport_selection);
