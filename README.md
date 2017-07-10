@@ -46,7 +46,7 @@ Install
 -------
 
 * Unpack Game if needed (if you have a single large Game.exe with no /www folder, etc.).
-  * I use this tool by Kao: [link](https://emerladcoder.github.io/Files/EnigmaVBUnpacker_v0.41a.zip)
+  * I use this tool by [Kao](https://lifeinhex.com/): [Dl Link](http://www.mediafire.com/file/phu1lxocl3r1b2x/EnigmaVBUnpacker_v0.41a.zip) ([Alt Link](https://emerladcoder.github.io/Files/EnigmaVBUnpacker_v0.41a.zip))
     * Select GameFolder/Game.exe and hit unpack
     * Rename GameFolder/%DEFAULT FOLDER% to something without the % signs
     * Copy any GameFolder/www folder from original directory into the renamed GameFolder/%DEFAULT FOLDER% direcotry
@@ -62,6 +62,8 @@ Install
       * Manually Add the following to your plugins.js file
         * {"name":"Cheat_Menu","status":true,"description":"","parameters":{}}
  * Delete MVPluginPatcher.exe and plugins_patch.txt
+
+If the www/js/plugins.js is read only, remove that in the properties or the patch with fail. 
 
 Some games might have have altered the plugin loading mechanism (for example using a single composite plugin to save space). In this case you should open the GameFolder/www/js/main.js and insert the code as shown below in order to get any extra plugins to load.
 
