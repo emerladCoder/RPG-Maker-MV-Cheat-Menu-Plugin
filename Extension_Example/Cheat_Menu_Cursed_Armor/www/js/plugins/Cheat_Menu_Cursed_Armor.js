@@ -84,6 +84,11 @@ Cheat_Menu.client_stamina_down = function() {
     $we._enemyHP -= Math.floor($we._enemyMaxHP / 10);
 }
 
+// Activate Sleep Event
+Cheat_Menu.wolf_sleep_event = function() {
+    $gameTemp.reserveCommonEvent(12);
+}
+
 
 /////////////////////////////////////////////////////////////
 // Various functions to settup each page of the cheat menu
@@ -243,11 +248,13 @@ Cheat_Menu.append_wolf_stat_2_selection = function(key1, key2, key3, key4) {
 
 // Here I create function to append each cheat for the 3rd menu
 //	these are for an ingame minigame
-Cheat_Menu.append_minigame_cheats = function(key1, key2, key3, key4) {
+Cheat_Menu.append_minigame_cheats = function(key1, key2, key3, key4, key5) {
     Cheat_Menu.append_cheat("Player Feel Down", "Activate", key1, Cheat_Menu.player_feel_down);
 	Cheat_Menu.append_cheat("Player Stamina Full", "Activate", key2, Cheat_Menu.player_stamina_full);
 	Cheat_Menu.append_cheat("Client Feel Up", "Activate", key3, Cheat_Menu.client_feel_up);
 	Cheat_Menu.append_cheat("Client Stamina Down", "Activate", key4, Cheat_Menu.client_stamina_down);
+	Cheat_Menu.append_title("Misc Cheats");
+	Cheat_Menu.append_cheat("Sleep Event", "Activate", key5, Cheat_Menu.wolf_sleep_event);
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -290,7 +297,7 @@ Cheat_Menu.menus[Cheat_Menu.menus.length] = function() {
 
 Cheat_Menu.menus[Cheat_Menu.menus.length] = function() {
     Cheat_Menu.append_cheat_title("Cursed Minigame Cheats");
-    Cheat_Menu.append_minigame_cheats(4, 5, 6, 7);
+    Cheat_Menu.append_minigame_cheats(4, 5, 6, 7, 8);
 };
 
 // Misc

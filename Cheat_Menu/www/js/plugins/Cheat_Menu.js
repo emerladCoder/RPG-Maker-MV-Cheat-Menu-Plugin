@@ -30,6 +30,10 @@ Cheat_Menu.saved_positions = [{m: -1, x: -1, y: -1}, {m: -1, x: -1, y: -1}, {m: 
 
 Cheat_Menu.teleport_location = {m: 1, x: 0, y: 0};
 
+Cheat_Menu.speed = null;
+Cheat_Menu.speed_unlocked = true;
+Cheat_Menu.speed_initialized = false;
+
 
 /////////////////////////////////////////////////
 // Initial values for reseting on new game/load
@@ -56,6 +60,9 @@ Cheat_Menu.initial_values.variable_selection = 1;
 Cheat_Menu.initial_values.switch_selection = 1;
 Cheat_Menu.initial_values.saved_positions = [{m: -1, x: -1, y: -1}, {m: -1, x: -1, y: -1}, {m: -1, x: -1, y: -1}];
 Cheat_Menu.initial_values.teleport_location = {m: 1, x: 0, y: 0};
+Cheat_Menu.initial_values.speed = null;
+Cheat_Menu.initial_values.speed_unlocked = true;
+Cheat_Menu.initial_values.speed_initialized = false;
 
 /////////////////////////////////////////////////
 // Cheat Functions
@@ -217,10 +224,30 @@ Cheat_Menu.give_armor = function(armor_id, amount) {
 	}
 };
 
+// initialize speed hook for locking
+Cheat_Menu.initialize_speed_lock = function() {
+	if (!Cheat_Menu.speed_initialized) {
+		Cheat_Menu.speed = $gamePlayer._moveSpeed;
+		Object.defineProperty($gamePlayer, "_moveSpeed", {
+			get: function() {return Cheat_Menu.speed;},
+			set: function(newVal) {if(Cheat_Menu.speed_unlocked) {Cheat_Menu.speed = newVal;}}
+		});
+		Cheat_Menu.speed_initialized = true;
+	}
+};
+
 // change player movement speed
 Cheat_Menu.change_player_speed = function(amount) {
-	$gamePlayer._moveSpeed += amount;
+	Cheat_Menu.initialize_speed_lock();
+	Cheat_Menu.speed += amount;
 };
+
+// toggle locking of player speed
+Cheat_Menu.toggle_lock_player_speed = function(amount) {
+	Cheat_Menu.initialize_speed_lock();
+	Cheat_Menu.speed_unlocked = !Cheat_Menu.speed_unlocked;
+};
+
 
 // clear active states on an actor
 Cheat_Menu.clear_actor_states = function(actor) {
@@ -816,10 +843,29 @@ Cheat_Menu.apply_speed_change = function(direction, event) {
 	Cheat_Menu.update_menu();
 };
 
+Cheat_Menu.apply_speed_lock_toggle = function() {
+	Cheat_Menu.toggle_lock_player_speed();
+	if (Cheat_Menu.speed_unlocked) {
+		SoundManager.playSystemSound(2);
+	}
+	else {
+		SoundManager.playSystemSound(1);
+	}
+	Cheat_Menu.update_menu();
+};
+
 // append the movement speed to the menu
-Cheat_Menu.append_speed_status = function(key1, key2) {
+Cheat_Menu.append_speed_status = function(key1, key2, key3) {
 	Cheat_Menu.append_title("Current Speed");
 	Cheat_Menu.append_scroll_selector($gamePlayer._moveSpeed, key1, key2, Cheat_Menu.apply_speed_change);
+	var status_text;
+	if (!Cheat_Menu.speed_unlocked) {
+		status_text = "<font color='#00ff00'>false</font>";
+	}
+	else {
+		status_text = "<font color='#ff0000'>true</font>";
+	}
+	Cheat_Menu.append_cheat("Speed Unlocked", status_text, key3, Cheat_Menu.apply_speed_lock_toggle);
 };
 
 // Left and right scrollers for handling switching between items selected
@@ -1292,7 +1338,7 @@ Cheat_Menu.menus.splice(0, 0, function() {
 Cheat_Menu.menus.splice(0, 0, function() {
 	Cheat_Menu.append_cheat_title("Speed");
 	Cheat_Menu.append_move_amount_selection(4, 5);
-	Cheat_Menu.append_speed_status(6, 7);
+	Cheat_Menu.append_speed_status(6, 7, 8);
 });
 
 Cheat_Menu.menus.splice(0, 0, function() {
