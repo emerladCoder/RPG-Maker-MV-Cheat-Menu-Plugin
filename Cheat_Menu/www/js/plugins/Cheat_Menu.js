@@ -62,7 +62,6 @@ Cheat_Menu.initial_values.saved_positions = [{m: -1, x: -1, y: -1}, {m: -1, x: -
 Cheat_Menu.initial_values.teleport_location = {m: 1, x: 0, y: 0};
 Cheat_Menu.initial_values.speed = null;
 Cheat_Menu.initial_values.speed_unlocked = true;
-Cheat_Menu.initial_values.speed_initialized = false;
 
 /////////////////////////////////////////////////
 // Cheat Functions
@@ -1486,6 +1485,11 @@ window.addEventListener("keydown", function(event) {
 					}
 				}
 
+				// if speed is locked then initialize it so effect is active
+				if (Cheat_Menu.speed_unlocked == false) {
+					Cheat_Menu.initialize_speed_lock();
+				}
+
 				// only do this once per load or new game
 				Cheat_Menu.initialized = true;
 			}
@@ -1541,8 +1545,10 @@ Cheat_Menu.initialize = function() {
 	Cheat_Menu.overlay_openable = true;
 	Cheat_Menu.initialized = false;
 	Cheat_Menu.cheat_menu_open = false;
+	Cheat_Menu.speed_initialized = false;
 	Cheat_Menu.overlay_box.remove();
 	Cheat_Menu.overlay.remove();
+
 
 	// periodic update
 	clearInterval(Cheat_Menu.menu_update_timer);
