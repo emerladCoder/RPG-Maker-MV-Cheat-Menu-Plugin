@@ -140,43 +140,73 @@ Cheat_Menu.god_mode_off = function(actor) {
 };
 
 // set all party hp
-Cheat_Menu.set_party_hp = function(hp) {
+Cheat_Menu.set_party_hp = function(hp, alive) {
 	var members = $gameParty.allMembers();
 	for (var i = 0; i < members.length; i++) {
-		members[i].setHp(hp);
+		if ((alive && members[i]._hp != 0) || !alive) {
+			members[i].setHp(hp);
+		}
 	}
 };
 
 // set all party mp
-Cheat_Menu.set_party_mp = function(mp) {
+Cheat_Menu.set_party_mp = function(mp, alive) {
 	var members = $gameParty.allMembers();
 	for (var i = 0; i < members.length; i++) {
-		members[i].setMp(mp);;
+		if ((alive && members[i]._hp != 0) || !alive) {
+			members[i].setMp(mp);
+		}
+	}
+};
+
+// set all party tp
+Cheat_Menu.set_party_tp = function(tp, alive) {
+	var members = $gameParty.allMembers();
+	for (var i = 0; i < members.length; i++) {
+		if ((alive && members[i]._hp != 0) || !alive) {
+			members[i].setTp(tp);
+		}
 	}
 };
 
 // party full recover hp
-Cheat_Menu.recover_party_hp = function() {
+Cheat_Menu.recover_party_hp = function(alive) {
 	var members = $gameParty.allMembers();
 	for (var i = 0; i < members.length; i++) {
-		members[i].setHp(members[i].mhp);
+		if ((alive && members[i]._hp != 0) || !alive) {
+			members[i].setHp(members[i].mhp);
+		}
 	}
 };
 
 // party full recover mp
-Cheat_Menu.recover_party_mp = function() {
+Cheat_Menu.recover_party_mp = function(alive) {
 	var members = $gameParty.allMembers();
 	for (var i = 0; i < members.length; i++) {
-		members[i].setMp(members[i].mmp);
+		if ((alive && members[i]._hp != 0) || !alive) {
+			members[i].setMp(members[i].mmp);
+		}
+	}
+};
+
+// party max tp
+Cheat_Menu.recover_party_tp = function(alive) {
+	var members = $gameParty.allMembers();
+	for (var i = 0; i < members.length; i++) {
+		if ((alive && members[i]._hp != 0) || !alive) {
+			members[i].setTp(members[i].maxTp());
+		}
 	}
 };
 
 // set all enemies hp
-Cheat_Menu.set_enemy_hp = function(hp) {
+Cheat_Menu.set_enemy_hp = function(hp, alive) {
 	var members = $gameTroop.members();
 	for (var i = 0; i < members.length; i++) {
 		if (members[i]) {
-			members[i].setHp(hp);;
+			if ((alive && members[i]._hp != 0) || !alive) {
+				members[i].setHp(hp);
+			}
 		}
 	}
 };
@@ -598,49 +628,185 @@ Cheat_Menu.append_godmode_status = function() {
 	Cheat_Menu.append_cheat("Status:", status_text, 6, Cheat_Menu.god_mode_toggle);
 };
 
-// handler for the enemy hp to 0 cheat
+// handler for the enemy hp to 0 cheat alive only
 Cheat_Menu.enemy_hp_cheat_1 = function() {
-	Cheat_Menu.set_enemy_hp(0);
+	Cheat_Menu.set_enemy_hp(0, true);
 	SoundManager.playSystemSound(1);
 };
 
-// handler for the enemy hp to 1 cheat
+// handler for the enemy hp to 1 cheat alive only
 Cheat_Menu.enemy_hp_cheat_2 = function() {
-	Cheat_Menu.set_enemy_hp(1);
+	Cheat_Menu.set_enemy_hp(1, true);
+	SoundManager.playSystemSound(1);
+};
+
+// handler for the enemy hp to 0 cheat all
+Cheat_Menu.enemy_hp_cheat_3 = function() {
+	Cheat_Menu.set_enemy_hp(0, false);
+	SoundManager.playSystemSound(1);
+};
+
+// handler for the enemy hp to 1 cheat all
+Cheat_Menu.enemy_hp_cheat_4 = function() {
+	Cheat_Menu.set_enemy_hp(1, false);
 	SoundManager.playSystemSound(1);
 };
 
 // Append the enemy hp cheats to the menu
-Cheat_Menu.append_enemy_cheats = function(key1, key2) {
+Cheat_Menu.append_enemy_cheats = function(key1, key2, key3, key4) {
+	Cheat_Menu.append_title("Alive");
 	Cheat_Menu.append_cheat("Enemy HP to 0", "Activate", key1, Cheat_Menu.enemy_hp_cheat_1);
 	Cheat_Menu.append_cheat("Enemy HP to 1", "Activate", key2, Cheat_Menu.enemy_hp_cheat_2);
+	Cheat_Menu.append_title("All");
+	Cheat_Menu.append_cheat("Enemy HP to 0", "Activate", key3, Cheat_Menu.enemy_hp_cheat_3);
+	Cheat_Menu.append_cheat("Enemy HP to 1", "Activate", key4, Cheat_Menu.enemy_hp_cheat_4);
 };
 
-// handler for the party hp cheat to 0
+// handler for the party hp cheat to 0 alive only
 Cheat_Menu.party_hp_cheat_1 = function() {
-	Cheat_Menu.set_party_hp(0);
+	Cheat_Menu.set_party_hp(0, true);
 	SoundManager.playSystemSound(1);
 };
 
-// handler for the party hp cheat to 1
+// handler for the party hp cheat to 1 alive only
 Cheat_Menu.party_hp_cheat_2 = function() {
-	Cheat_Menu.set_party_hp(1);
+	Cheat_Menu.set_party_hp(1, true);
 	SoundManager.playSystemSound(1);
 };
 
-// handler for the party full recovery cheat
-Cheat_Menu.party_recovery_cheat = function() {
-	Cheat_Menu.recover_party_hp();
-	Cheat_Menu.recover_party_mp();
-	Cheat_Menu.clear_party_states();
+// handler for the party hp cheat to full alive only
+Cheat_Menu.party_hp_cheat_3 = function() {
+	Cheat_Menu.recover_party_hp(true);
 	SoundManager.playSystemSound(1);
 };
 
-// append the party health/recovery cheats
-Cheat_Menu.append_party_cheats = function(key1, key2, key3) {
+// handler for the party hp cheat to 0 all
+Cheat_Menu.party_hp_cheat_4 = function() {
+	Cheat_Menu.set_party_hp(1, false);
+	SoundManager.playSystemSound(1);
+};
+
+// handler for the party hp cheat to 1 all
+Cheat_Menu.party_hp_cheat_5 = function() {
+	Cheat_Menu.set_party_hp(0, false);
+	SoundManager.playSystemSound(1);
+};
+
+// handler for the party hp cheat full all
+Cheat_Menu.party_hp_cheat_6 = function() {
+	Cheat_Menu.recover_party_hp(false);
+	SoundManager.playSystemSound(1);
+};
+
+
+// append the party hp cheats
+Cheat_Menu.append_hp_cheats = function(key1, key2, key3, key4, key5, key6) {
+	Cheat_Menu.append_title("Alive");
 	Cheat_Menu.append_cheat("Party HP to 0", "Activate", key1, Cheat_Menu.party_hp_cheat_1);
 	Cheat_Menu.append_cheat("Party HP to 1", "Activate", key2, Cheat_Menu.party_hp_cheat_2);
-	Cheat_Menu.append_cheat("Party Full Recovery", "Activate", key3, Cheat_Menu.party_recovery_cheat);
+	Cheat_Menu.append_cheat("Party Full HP", "Activate", key3, Cheat_Menu.party_hp_cheat_3);
+	Cheat_Menu.append_title("All");
+	Cheat_Menu.append_cheat("Party HP to 0", "Activate", key4, Cheat_Menu.party_hp_cheat_4);
+	Cheat_Menu.append_cheat("Party HP to 1", "Activate", key5, Cheat_Menu.party_hp_cheat_5);
+	Cheat_Menu.append_cheat("Party Full HP", "Activate", key6, Cheat_Menu.party_hp_cheat_6);
+};
+
+// handler for the party mp cheat to 0 alive only
+Cheat_Menu.party_mp_cheat_1 = function() {
+	Cheat_Menu.set_party_mp(0, true);
+	SoundManager.playSystemSound(1);
+};
+
+// handler for the party mp cheat to 1 alive only
+Cheat_Menu.party_mp_cheat_2 = function() {
+	Cheat_Menu.set_party_mp(1, true);
+	SoundManager.playSystemSound(1);
+};
+
+// handler for the party mp cheat to full alive only
+Cheat_Menu.party_mp_cheat_3 = function() {
+	Cheat_Menu.recover_party_mp(true);
+	SoundManager.playSystemSound(1);
+};
+
+// handler for the party mp cheat to 0 all
+Cheat_Menu.party_mp_cheat_4 = function() {
+	Cheat_Menu.set_party_mp(1, false);
+	SoundManager.playSystemSound(1);
+};
+
+// handler for the party mp cheat to 1 all
+Cheat_Menu.party_mp_cheat_5 = function() {
+	Cheat_Menu.set_party_mp(0, false);
+	SoundManager.playSystemSound(1);
+};
+
+// handler for the party mp cheat full all
+Cheat_Menu.party_mp_cheat_6 = function() {
+	Cheat_Menu.recover_party_mp(false);
+	SoundManager.playSystemSound(1);
+};
+
+
+// append the party mp cheats
+Cheat_Menu.append_mp_cheats = function(key1, key2, key3, key4, key5, key6) {
+	Cheat_Menu.append_title("Alive");
+	Cheat_Menu.append_cheat("Party MP to 0", "Activate", key1, Cheat_Menu.party_mp_cheat_1);
+	Cheat_Menu.append_cheat("Party MP to 1", "Activate", key2, Cheat_Menu.party_mp_cheat_2);
+	Cheat_Menu.append_cheat("Party Full MP", "Activate", key3, Cheat_Menu.party_mp_cheat_3);
+	Cheat_Menu.append_title("All");
+	Cheat_Menu.append_cheat("Party MP to 0", "Activate", key4, Cheat_Menu.party_mp_cheat_4);
+	Cheat_Menu.append_cheat("Party MP to 1", "Activate", key5, Cheat_Menu.party_mp_cheat_5);
+	Cheat_Menu.append_cheat("Party Full MP", "Activate", key6, Cheat_Menu.party_mp_cheat_6);
+};
+
+// handler for the party tp cheat to 0 alive only
+Cheat_Menu.party_tp_cheat_1 = function() {
+	Cheat_Menu.set_party_tp(0, true);
+	SoundManager.playSystemSound(1);
+};
+
+// handler for the party tp cheat to 1 alive only
+Cheat_Menu.party_tp_cheat_2 = function() {
+	Cheat_Menu.set_party_tp(1, true);
+	SoundManager.playSystemSound(1);
+};
+
+// handler for the party tp cheat to full alive only
+Cheat_Menu.party_tp_cheat_3 = function() {
+	Cheat_Menu.recover_party_tp(true);
+	SoundManager.playSystemSound(1);
+};
+
+// handler for the party tp cheat to 0 all
+Cheat_Menu.party_tp_cheat_4 = function() {
+	Cheat_Menu.set_party_tp(1, false);
+	SoundManager.playSystemSound(1);
+};
+
+// handler for the party tp cheat to 1 all
+Cheat_Menu.party_tp_cheat_5 = function() {
+	Cheat_Menu.set_party_tp(0, false);
+	SoundManager.playSystemSound(1);
+};
+
+// handler for the party tp cheat full all
+Cheat_Menu.party_tp_cheat_6 = function() {
+	Cheat_Menu.recover_party_tp(false);
+	SoundManager.playSystemSound(1);
+};
+
+
+// append the party tp cheats
+Cheat_Menu.append_tp_cheats = function(key1, key2, key3, key4, key5, key6) {
+	Cheat_Menu.append_title("Alive");
+	Cheat_Menu.append_cheat("Party TP to 0", "Activate", key1, Cheat_Menu.party_tp_cheat_1);
+	Cheat_Menu.append_cheat("Party TP to 1", "Activate", key2, Cheat_Menu.party_tp_cheat_2);
+	Cheat_Menu.append_cheat("Party Full TP", "Activate", key3, Cheat_Menu.party_tp_cheat_3);
+	Cheat_Menu.append_title("All");
+	Cheat_Menu.append_cheat("Party TP to 0", "Activate", key4, Cheat_Menu.party_tp_cheat_4);
+	Cheat_Menu.append_cheat("Party TP to 1", "Activate", key5, Cheat_Menu.party_tp_cheat_5);
+	Cheat_Menu.append_cheat("Party Full TP", "Activate", key6, Cheat_Menu.party_tp_cheat_6);
 };
 
 // handler for the toggle no clip cheat
@@ -1029,6 +1195,17 @@ Cheat_Menu.clear_current_actor_states = function() {
 	Cheat_Menu.update_menu();
 };
 
+// handler for the party state clear cheat
+Cheat_Menu.party_clear_states_cheat = function() {
+	Cheat_Menu.clear_party_states();
+	SoundManager.playSystemSound(1);
+};
+
+// append the party hp cheats
+Cheat_Menu.append_party_state = function(key1) {
+	Cheat_Menu.append_cheat("Clear Party States", "Activate", key1, Cheat_Menu.party_clear_states_cheat);
+};
+
 // append the clear actor state cheat to the menu
 Cheat_Menu.append_current_state = function(key1) {
 	Cheat_Menu.append_title("Current State");
@@ -1330,8 +1507,9 @@ Cheat_Menu.menus.splice(0, 0, function() {
 
 Cheat_Menu.menus.splice(0, 0, function() {
 	Cheat_Menu.append_cheat_title("Clear States");
-	Cheat_Menu.append_actor_selection(4, 5);
-	Cheat_Menu.append_current_state(6);
+	Cheat_Menu.append_party_state(4);
+	Cheat_Menu.append_actor_selection(5, 6);
+	Cheat_Menu.append_current_state(7);
 });
 
 Cheat_Menu.menus.splice(0, 0, function() {
@@ -1379,16 +1557,33 @@ Cheat_Menu.menus.splice(0, 0, function() {
 });
 
 Cheat_Menu.menus.splice(0, 0, function() {
-	Cheat_Menu.append_cheat_title("No Clip");
+	Cheat_Menu.append_cheat_title("Party TP");
 
-	Cheat_Menu.append_no_clip_status(4);
+	Cheat_Menu.append_tp_cheats(4, 5, 6, 7, 8, 9);
 });
 
 Cheat_Menu.menus.splice(0, 0, function() {
-	Cheat_Menu.append_cheat_title("Enemy/Party Health");
+	Cheat_Menu.append_cheat_title("Party MP");
 
-	Cheat_Menu.append_enemy_cheats(4, 5);
-	Cheat_Menu.append_party_cheats(6, 7, 8);
+	Cheat_Menu.append_mp_cheats(4, 5, 6, 7, 8, 9);
+});
+
+Cheat_Menu.menus.splice(0, 0, function() {
+	Cheat_Menu.append_cheat_title("Party HP");
+
+	Cheat_Menu.append_hp_cheats(4, 5, 6, 7, 8, 9);
+});
+
+Cheat_Menu.menus.splice(0, 0, function() {
+	Cheat_Menu.append_cheat_title("Enemy HP");
+
+	Cheat_Menu.append_enemy_cheats(4, 5, 6, 7);
+});
+
+Cheat_Menu.menus.splice(0, 0, function() {
+	Cheat_Menu.append_cheat_title("No Clip");
+
+	Cheat_Menu.append_no_clip_status(4);
 });
 
 Cheat_Menu.menus.splice(0, 0, function() {
