@@ -7,9 +7,23 @@
 using namespace std;
 
 int main() {
+	// find the plugin.js file
+	string plugins_path;
+	if (FILE* file = fopen("www/js/plugins.js", "r")) {
+		fclose(file);
+		plugins_path = "www/js/plugins.js";
+	}
+	else if (FILE* file = fopen("js/plugins.js", "r")) {
+		fclose(file);
+		plugins_path = "js/plugins.js";
+	}
+	else {
+		cout << "Could not find plugins.js\n";
+	}
+
 	// open the plugin.js file
 	ifstream plugins_js;
-	plugins_js.open(L"www/js/plugins.js");
+	plugins_js.open(plugins_path);
 
 	//  check for error opening
 	if (!plugins_js.is_open()) {
@@ -22,7 +36,7 @@ int main() {
 
 	// open the plugins_patch file
 	ifstream patch;
-	patch.open(L"plugins_patch.txt");
+	patch.open("plugins_patch.txt");
 
 	// check for error opening
 	if (!patch.is_open()) {
@@ -70,7 +84,7 @@ int main() {
 
 	// writeback the new plugins
 	ofstream plugin_js_write;
-	plugin_js_write.open(L"www/js/plugins.js", ios::binary | ios::trunc);
+	plugin_js_write.open(plugins_path, ios::binary | ios::trunc);
 
 	// close the file
 	plugin_js_write.write(plugin_js_string.c_str(), plugin_js_string.size());
