@@ -682,13 +682,13 @@ Cheat_Menu.party_hp_cheat_3 = function() {
 
 // handler for the party hp cheat to 0 all
 Cheat_Menu.party_hp_cheat_4 = function() {
-	Cheat_Menu.set_party_hp(1, false);
+	Cheat_Menu.set_party_hp(0, false);
 	SoundManager.playSystemSound(1);
 };
 
 // handler for the party hp cheat to 1 all
 Cheat_Menu.party_hp_cheat_5 = function() {
-	Cheat_Menu.set_party_hp(0, false);
+	Cheat_Menu.set_party_hp(1, false);
 	SoundManager.playSystemSound(1);
 };
 
@@ -731,13 +731,13 @@ Cheat_Menu.party_mp_cheat_3 = function() {
 
 // handler for the party mp cheat to 0 all
 Cheat_Menu.party_mp_cheat_4 = function() {
-	Cheat_Menu.set_party_mp(1, false);
+	Cheat_Menu.set_party_mp(0, false);
 	SoundManager.playSystemSound(1);
 };
 
 // handler for the party mp cheat to 1 all
 Cheat_Menu.party_mp_cheat_5 = function() {
-	Cheat_Menu.set_party_mp(0, false);
+	Cheat_Menu.set_party_mp(1, false);
 	SoundManager.playSystemSound(1);
 };
 
@@ -780,13 +780,13 @@ Cheat_Menu.party_tp_cheat_3 = function() {
 
 // handler for the party tp cheat to 0 all
 Cheat_Menu.party_tp_cheat_4 = function() {
-	Cheat_Menu.set_party_tp(1, false);
+	Cheat_Menu.set_party_tp(0, false);
 	SoundManager.playSystemSound(1);
 };
 
 // handler for the party tp cheat to 1 all
 Cheat_Menu.party_tp_cheat_5 = function() {
-	Cheat_Menu.set_party_tp(0, false);
+	Cheat_Menu.set_party_tp(1, false);
 	SoundManager.playSystemSound(1);
 };
 
@@ -1635,7 +1635,7 @@ Cheat_Menu.keyCodes.KEYCODE_7 = {keyCode: 55, key_listener: 7};
 Cheat_Menu.keyCodes.KEYCODE_8 = {keyCode: 56, key_listener: 8};
 Cheat_Menu.keyCodes.KEYCODE_9 = {keyCode: 57, key_listener: 9};
 Cheat_Menu.keyCodes.KEYCODE_MINUS = {keyCode: 189, key_listener: '-'};
-Cheat_Menu.keyCodes.KEYCODE_EQUAL = {keyCode: 18, key_listener: '='};
+Cheat_Menu.keyCodes.KEYCODE_EQUAL = {keyCode: 187, key_listener: '='};
 
 Cheat_Menu.keyCodes.KEYCODE_TILDE = {keyCode: 192, key_listener: '`'};
 

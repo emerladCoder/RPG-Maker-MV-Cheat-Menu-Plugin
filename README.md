@@ -46,13 +46,7 @@ Install
 -------
 
 * Unpack Game if needed (if you have a single large Game.exe with no /www folder, etc.).
-  * I use this tool by [Kao](https://lifeinhex.com/): [Dl Link](http://www.mediafire.com/file/phu1lxocl3r1b2x/EnigmaVBUnpacker_v0.41a.zip) ([Alt Link](https://emerladcoder.github.io/Files/EnigmaVBUnpacker_v0.41a.zip))
-    * Select GameFolder/Game.exe and hit unpack
-    * Rename GameFolder/%DEFAULT FOLDER% to something without the % signs
-    * Copy any GameFolder/www folder from original directory into the renamed GameFolder/%DEFAULT FOLDER% direcotry
-    * The renamed GameFolder/%DEFAULT FOLDER% is your new game folder (place it wherever you like, and use it for the steps below), run with the Game.exe in that folder
-  * Alternately Use one of these tools if the above doesn't work: [link](http://www.ulmf.org/bbs/showpost.php?p=830445&postcount=91)
-    * I don't use these so your on your own for instructions
+  * I used to use EnigmaVBUnpacker tool by [Kao](https://lifeinhex.com/) (most new games do not require this anymore)
 * Copy and Paste this contents of Cheat_Menu folder into folder with Game.exe
 * Patch your www/js/plugins.js  
   * Backup your www/js/plugins.js file
@@ -94,7 +88,7 @@ Uninstall
   * Ideally you can just restore you backup of plugins.js
 * Delete MVPluginPatcher.exe and plugins_patch.txt if you haven't already
 
-Other Cool Stuff
+Other RPG Maker MV Links
 ----------------
 Original ULMF thread for this plugin: [thread](http://www.ulmf.org/bbs/showthread.php?t=28982)
 
