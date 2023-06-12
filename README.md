@@ -53,7 +53,7 @@ Install
   * Patch
       * Run MVPluginPatcher.exe  
         or
-      * Manually Add the following to your plugins.js file
+      * Manually Add the following to your plugins.js file, ensure you follow proper JavaScript formating for the $plugins array and include a , at end of the line before where you add this (recommended to add the bottom of plugins.js file)
         * {"name":"Cheat_Menu","status":true,"description":"","parameters":{}}
  * Delete MVPluginPatcher.exe and plugins_patch.txt
 
