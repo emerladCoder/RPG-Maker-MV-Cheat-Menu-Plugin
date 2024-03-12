@@ -21,5 +21,5 @@ if [ -n "$last_occurrence" ]; then
     # Remove the last occurrence of "];"
     sed -i "${last_occurrence}d" "$file_path"
     # Add the plugin
-    echo '{"name":"Cheat_Menu","status":true,"description":"","parameters":{}}];' >> "$file_path"
+    echo ',{"name":"Cheat_Menu","status":true,"description":"","parameters":{}}];' >> "$file_path"
 fi
