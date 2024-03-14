@@ -5,11 +5,22 @@
 echo "Searching for and patching RPGM Plugins.js"
 PATTERN='/];/i ,{"name":"Cheat_Menu","status":true,"description":"","parameters":{}}'
 if [ -f "www/js/plugins.js" ]; then
-	cp -v www/js/plugins.js www/js/plugins.js~ 2>/dev/null &&
-		sed -i "$PATTERN" www/js/plugins.js
+    file_path="www/js/plugins.js"
 elif [ -f "js/plugins.js" ]; then
-	cp -v js/plugins.js js/plugins.js~ 2>/dev/null &&
-		sed -i "$PATTERN" js/plugins.js
+    file_path="js/plugins.js"
 else
     echo "No RPGM installation found."
+fi
+
+
+# Find the line number of the last occurrence of "];"
+last_occurrence=$(grep -n '];' "$file_path" | tail -n 1 | cut -d ':' -f 1)
+
+# If there is an occurrence of "];"
+if [ -n "$last_occurrence" ]; then
+    # Remove the last occurrence of "];"
+    sed -i "${last_occurrence}d" "$file_path"
+    sed -i "/^[[:space:]]*$/d" "$file_path"
+    sed -i "$ s/,$//" "$file_path"
+    echo ',{"name":"Cheat_Menu","status":true,"description":"","parameters":{}}];' >> "$file_path"
 fi
