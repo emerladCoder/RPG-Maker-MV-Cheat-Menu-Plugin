@@ -20,6 +20,7 @@ last_occurrence=$(grep -n '];' "$file_path" | tail -n 1 | cut -d ':' -f 1)
 if [ -n "$last_occurrence" ]; then
     # Remove the last occurrence of "];"
     sed -i "${last_occurrence}d" "$file_path"
-    # Add the plugin
+    sed -i "/^[[:space:]]*$/d" "$file_path"
+    sed -i "$ s/,$//" "$file_path"
     echo ',{"name":"Cheat_Menu","status":true,"description":"","parameters":{}}];' >> "$file_path"
 fi
